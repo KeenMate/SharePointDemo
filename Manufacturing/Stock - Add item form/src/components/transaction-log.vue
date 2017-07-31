@@ -1,7 +1,7 @@
 <template>
     <div>
-        <h6 v-if='name !== ""'>Transaction log of {{name}}:</h6>
-        <h6 v-else>Select an item to show transaction log</h6>
+        <h6 v-if='name !== ""'>All transactions of {{name}}:</h6>
+        <h6 v-else>Please select an item to display a transaction log</h6>
         <table class="striped bordered ">
             <thead>
                 <tr>
@@ -17,12 +17,17 @@
             <tbody>
                 <tr v-bind:key="l.Created " v-for="l in Log ">
                     <td>{{parseDate(l.Created)}}</td>
-                    <td v-if="l.Operation !== null">{{l.Operation.Value}}</td>
-                    <td v-else>Error</td>
-                    <td class="center-align ">{{l.Title}}</td>
-                    <td class="right-align ">{{l.Amount}}</td>
-                    <td class="right-align ">{{l.TotalPrice}} €</td>
-                    <td class="center-align ">{{l.CreatedBy.Jméno}}</td>
+                    
+                    <template v-if="l.Operation !== null">
+                        <td>{{l.Operation.Value}}</td>
+                        <td class="center-align">{{l.Title}}</td>
+                        <td class="right-align">{{l.Amount}}</td>
+                        <td class="right-align">{{l.TotalPrice}} €</td>
+                        <td class="center-align">{{l.CreatedBy.Jméno}}</td>
+                    </template>
+                    <template v-else>
+                        <td colspan="5">Cannot display this transaction</td>
+                    </template>
                 </tr>
             </tbody>
         </table>
