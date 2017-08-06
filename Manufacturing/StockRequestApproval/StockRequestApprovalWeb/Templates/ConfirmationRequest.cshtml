@@ -1,0 +1,202 @@
+﻿@Include("Head")
+<body style="margin: 0 !important; padding: 0 !important;">
+	<!-- HIDDEN PREHEADER TEXT -->
+	<div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
+		Items were requested.
+	</div>
+	<!-- HEADER -->
+	<table border="0" cellpadding="0" cellspacing="0" width="100%">
+		@Include("Header")
+		<tr>
+			<td bgcolor="#ffffff" align="center" style="padding: 15px;">
+				<!--[if (gte mso 9)|(IE)]>
+				<table align="center" border="0" cellspacing="0" cellpadding="0" width="500">
+				<tr>
+				<td align="center" valign="top" width="500">
+				<![endif]-->
+				<table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 500px;" class="responsive-table">
+					<tr>
+						<td>
+							<!-- COPY -->
+							<table width="100%" border="0" cellspacing="0" cellpadding="0">
+								<tr>
+									<td align="center" style="font-size: 32px; font-family: Helvetica, Arial, sans-serif; color: #333333; padding-top: 5px;" class="padding-copy">Hello @Model.Name</td>
+								</tr>
+								<tr>
+									<td align="left" style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">@Model.RequesterName (<a href="mailto:@Model.RequesterEmail">@Model.RequesterEmail</a>) requested following items:</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+				<!--[if (gte mso 9)|(IE)]>
+				</td>
+				</tr>
+				</table>
+				<![endif]-->
+			</td>
+		</tr>
+		<tr>
+			<td bgcolor="#ffffff" align="center" style="padding: 15px;" class="padding">
+				<!--[if (gte mso 9)|(IE)]>
+				<table align="center" border="0" cellspacing="0" cellpadding="0" width="500">
+				<tr>
+				<td align="center" valign="top" width="500">
+				<![endif]-->
+				<table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 500px;" class="responsive-table">
+					@for (int i = 0; i < @Model.Items.Count; i++)
+					{
+						<tr>
+							<td @{
+								if (i == 0 && Model.Items.Count == 1) { WriteLiteral(" style=\"padding: 10px 0 0 0; border-top: 1px dashed #aaaaaa; border-bottom: 1px dashed #aaaaaa;\""); }
+								else if (i == 0) { WriteLiteral("style=\"padding: 10px 0 0 0; border-top: 1px dashed #aaaaaa;\""); }
+								else { WriteLiteral("style=\"padding: 10px 0 0 0;\""); }
+							}>
+								<!-- TWO COLUMNS -->
+								<table cellspacing="0" cellpadding="0" border="0" width="100%">
+									<tr>
+										<td valign="top" class="mobile-wrapper">
+											<!-- LEFT COLUMN -->
+											<table cellpadding="0" cellspacing="0" border="0" width="47%" style="width: 47%;" align="left">
+												<tr>
+													<td style="padding: 0 0 10px 0;">
+														<table cellpadding="0" cellspacing="0" border="0" width="100%">
+															<tr>
+																<td align="left" style="font-family: Arial, sans-serif; color: #333333; font-size: 16px;">@Model.Items[i].Title (@Model.Items[i].Amount)</td>
+															</tr>
+														</table>
+													</td>
+												</tr>
+											</table>
+											<!-- RIGHT COLUMN -->
+											<table cellpadding="0" cellspacing="0" border="0" width="47%" style="width: 47%;" align="right">
+												<tr>
+													<td style="padding: 0 0 10px 0;">
+														<table cellpadding="0" cellspacing="0" border="0" width="100%">
+															<tr>
+																<td align="right" style="font-family: Arial, sans-serif; color: #333333; font-size: 16px;">@Model.Items[i].TotalPrice €</td>
+															</tr>
+														</table>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>	}
+					@if (@Model.Items.Count > 1)
+					{
+						<tr>
+							<td style="padding: 10px 0 0px 0; border-top: 1px solid #eaeaea; border-bottom: 1px dashed #aaaaaa;">
+								<!-- TWO COLUMNS -->
+								<table cellspacing="0" cellpadding="0" border="0" width="100%">
+									<tr>
+										<td valign="top" class="mobile-wrapper">
+											<!-- LEFT COLUMN -->
+											<table cellpadding="0" cellspacing="0" border="0" width="47%" style="width: 47%;" align="left">
+												<tr>
+													<td style="padding: 0 0 10px 0;">
+														<table cellpadding="0" cellspacing="0" border="0" width="100%">
+															<tr>
+																<td align="left" style="font-family: Arial, sans-serif; color: #333333; font-size: 16px; font-weight: bold;">Total</td>
+															</tr>
+														</table>
+													</td>
+												</tr>
+											</table>
+											<!-- RIGHT COLUMN -->
+											<table cellpadding="0" cellspacing="0" border="0" width="47%" style="width: 47%;" align="right">
+												<tr>
+													<td>
+														<table cellpadding="0" cellspacing="0" border="0" width="100%">
+															<tr>
+																<td align="right" style="font-family: Arial, sans-serif; color: #7ca230; font-size: 16px; font-weight: bold;">@Model.Items.Sum(x => x.TotalPrice) €</td>
+															</tr>
+														</table>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					}
+				</table>
+				<!--[if (gte mso 9)|(IE)]>
+				</td>
+				</tr>
+				</table>
+				<![endif]-->
+			</td>
+		</tr>
+		<tr>
+			<td bgcolor="#ffffff" align="center" style="padding: 15px;">
+				<!--[if (gte mso 9)|(IE)]>
+				<table align="center" border="0" cellspacing="0" cellpadding="0" width="500">
+				<tr>
+				<td align="center" valign="top" width="500">
+				<![endif]-->
+				<table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 500px;" class="responsive-table">
+					<tr>
+						<td>
+							<table width="100%" border="0" cellspacing="0" cellpadding="0">
+								<tr>
+									<td>
+										<!-- COPY -->
+										<table width="100%" border="0" cellspacing="0" cellpadding="0">
+											<tr>
+												<td align="left" style="padding: 0 0 0 0; font-size: 14px; line-height: 18px; font-family: Helvetica, Arial, sans-serif; color: #aaaaaa; font-style: italic;" class="padding-copy">If you wish to approve the request, click the Approve button below, otherwise, click Reject.</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+				<!--[if (gte mso 9)|(IE)]>
+				</td>
+				</tr>
+				</table>
+				<![endif]-->
+			</td>
+		</tr>
+		<tr>
+			<td bgcolor="#ffffff" align="center" style="padding: 15px;">
+				<table border="0" cellpadding="0" cellspacing="0" width="500" class="responsive-table">
+					<tr>
+						<td>
+							<table width="100%" border="0" cellspacing="0" cellpadding="0">
+								<tr>
+									<td align="center">
+										<!-- BULLETPROOF BUTTON -->
+										<table width="100%" border="0" cellspacing="0" cellpadding="0">
+											<tr>
+												<td align="center" style="padding-top: 10px;" class="padding">
+													<table border="0" cellspacing="0" cellpadding="0" class="mobile-button-container">
+														<tr>
+															<td align="center"><a href="https://localhost:44382/Response/Approve?SPHostUrl=https%3A%2F%2Fkeenmate.sharepoint.com%2Fsites%2Fdemo%2Fmanufacturingfacility&response=approve&guid=@Model.ItemGuid" target="_blank" style="background-color: #256F9C; width: 75px; margin: 3px;font-size: 16px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; border-radius: 3px; padding: 15px 25px; border: 1px solid #256F9C; display: inline-block;" class="mobile-button">Approve</a></td>
+															<td align="center"><a href="https://localhost:44382/Response/Reject?SPHostUrl=https%3A%2F%2Fkeenmate.sharepoint.com%2Fsites%2Fdemo%2Fmanufacturingfacility&response=reject&guid=@Model.ItemGuid" target="_blank" style="background-color: #256F9C; width: 75px; margin: 3px;font-size: 16px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; border-radius: 3px; padding: 15px 25px; border: 1px solid #256F9C; display: inline-block;" class="mobile-button">Reject</a></td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+				<!--[if (gte mso 9)|(IE)]>
+			</td>
+			</tr>
+			</table>
+			<![endif]-->
+			</td>
+		</tr>
+		@Include("Footer")
+	</table>
+</body>
