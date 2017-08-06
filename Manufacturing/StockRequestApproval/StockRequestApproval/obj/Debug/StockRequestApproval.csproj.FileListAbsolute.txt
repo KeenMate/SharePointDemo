@@ -1,0 +1,6 @@
+c:\users\kuba\documents\visual studio 2017\Projects\StockRequestApproval\StockRequestApproval\bin\Debug\ApplicationInsights.config
+c:\users\kuba\documents\visual studio 2017\Projects\StockRequestApproval\StockRequestApproval\bin\Debug\StockRequestApproval.dll.config
+c:\users\kuba\documents\visual studio 2017\Projects\StockRequestApproval\StockRequestApproval\bin\Debug\StockRequestApproval.pdb
+c:\users\kuba\documents\visual studio 2017\Projects\StockRequestApproval\StockRequestApproval\obj\Debug\StockRequestApproval.dll
+c:\users\kuba\documents\visual studio 2017\Projects\StockRequestApproval\StockRequestApproval\obj\Debug\StockRequestApproval.pdb
+C:\Users\Kuba\documents\visual studio 2017\Projects\StockRequestApproval\StockRequestApproval\obj\Debug\StockRequestApproval.csprojResolveAssemblyReference.cache
