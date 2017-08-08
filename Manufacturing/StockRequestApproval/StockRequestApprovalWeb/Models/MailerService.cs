@@ -14,6 +14,8 @@ namespace StockRequestApprovalWeb.Services
 	{
 		public static void SendMail(string template, string toAdress, object modelO = null)
 		{
+			var apiKey = "";
+			var client = new SendGridClient(apiKey);
 			switch (template)
 			{
 				case "StockRequest":
@@ -29,8 +31,6 @@ namespace StockRequestApprovalWeb.Services
 
 						var to = new EmailAddress(toAdress, model.UserName);
 
-						var apiKey = "";
-						var client = new SendGridClient(apiKey);
 						var from = new EmailAddress("confirmation@keenmate.com", "Stock Request");
 						var subject = "An Item was sended to confirmation";
 						var plainTextContent = $"item request";
@@ -64,8 +64,6 @@ namespace StockRequestApprovalWeb.Services
 
 						var to = new EmailAddress(toAdress, model.Name);
 
-						var apiKey = "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";
-						var client = new SendGridClient(apiKey);
 						var from = new EmailAddress("confirmation@keenmate.com", "Stock Request");
 						var subject = "New request is waiting for confirmtion";
 						var plainTextContent = $"item request";
