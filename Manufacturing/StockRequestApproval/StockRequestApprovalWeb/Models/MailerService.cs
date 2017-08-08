@@ -29,7 +29,7 @@ namespace StockRequestApprovalWeb.Services
 
 						var to = new EmailAddress(toAdress, model.UserName);
 
-						var apiKey = "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";
+						var apiKey = "";
 						var client = new SendGridClient(apiKey);
 						var from = new EmailAddress("confirmation@keenmate.com", "Stock Request");
 						var subject = "An Item was sended to confirmation";
