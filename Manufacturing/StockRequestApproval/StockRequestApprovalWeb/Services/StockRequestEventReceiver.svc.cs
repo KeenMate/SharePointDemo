@@ -4,14 +4,11 @@ using System.Linq;
 using System.Text;
 using Microsoft.SharePoint.Client;
 using Microsoft.SharePoint.Client.EventReceivers;
-using System.Net.Mail;
-using SendGrid;
-using SendGrid.Helpers.Mail;
 using StockRequestApprovalWeb.Models;
-using RazorEngine.Templating;
-using RazorEngine;
-using Newtonsoft.Json;
 using System.Web;
+using StockRequestApprovalWeb.Managers;
+using StockRequestApprovalWeb.Helpers;
+using System.Configuration;
 
 namespace StockRequestApprovalWeb.Services
 {
@@ -42,13 +39,13 @@ namespace StockRequestApprovalWeb.Services
 					clientContext.Load(clientContext.Web.CurrentUser);
 					clientContext.Load(clientContext.Web);
 
-					List oList = clientContext.Web.Lists.GetByTitle("Configuration");
+					List oList = clientContext.Web.Lists.GetByTitle(ConfigurationManager.AppSettings["ConfigurationListName"]);
 
 					CamlQuery camlQuery = new CamlQuery();
 					ListItemCollection collListItem = oList.GetItems(camlQuery);
 
 					clientContext.Load(collListItem);
-					clientContext.ExecuteQuery();					
+					clientContext.ExecuteQuery();
 
 					StockRequestModel model = StockRequestMapper.MapStockRequestModel(properties, clientContext.Web.CurrentUser.Title);
 
@@ -60,24 +57,25 @@ namespace StockRequestApprovalWeb.Services
 							neededMaterials.Add(item.MaterialType);
 					}
 
+					JsonLoader loader = new JsonLoader();
+					NotificationManager m = new NotificationManager(ConfigurationHelper.GetApiKey(ApiKeys.SendGridApiKey), ConfigurationManager.AppSettings["templateDefsPath.json"]);
 					foreach (string s in neededMaterials)
 					{
 						foreach (ListItem item in collListItem)
 						{
 							if (item.FieldValues["Title"].ToString() == s)
 							{
-								ConfirmationRequestModel cModel = new ConfirmationRequestModel();
-								cModel.Name = ((FieldUserValue)item.FieldValues["Value"]).LookupValue;
-								cModel.Items = model.Items;
-								cModel.RequesterName = clientContext.Web.CurrentUser.Title;
-								cModel.RequesterEmail = clientContext.Web.CurrentUser.Email;
-								MailerService.SendMail("ConfirmationRequest", ((FieldUserValue)item.FieldValues["Value"]).Email, cModel);
+								ApprovalRequestModel aModel = new ApprovalRequestModel();
+								aModel.ApproverName = ((FieldUserValue)item.FieldValues["Value"]).LookupValue;
+								aModel.Items = model.Items;
+								aModel.RequesterName = clientContext.Web.CurrentUser.Title;
+								aModel.RequesterEmail = clientContext.Web.CurrentUser.Email;
+								m.SendApprovalRequest(aModel, ((FieldUserValue)item.FieldValues["Value"]).Email);
 								break;
 							}
 						}
 					}
-
-					MailerService.SendMail("StockRequest", clientContext.Web.CurrentUser.Email, model);
+					m.SendRequestApproved(model, clientContext.Web.CurrentUser.Email);
 				}
 			}
 		}

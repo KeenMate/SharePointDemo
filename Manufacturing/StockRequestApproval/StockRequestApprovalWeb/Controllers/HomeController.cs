@@ -1,5 +1,6 @@
 ﻿using Microsoft.SharePoint.Client;
 using RERHostDemoWeb;
+using StockRequestApprovalWeb.Managers;
 using StockRequestApprovalWeb.Models;
 using StockRequestApprovalWeb.Services;
 using System;
@@ -27,16 +28,8 @@ namespace StockRequestApprovalWeb.Controllers
 					clientContext.ExecuteQuery();
 					ViewBag.HostLists = hostListColl.Select(l => new SelectListItem() { Text = l.Title, Value = l.Title });
 				}
-			}/*
-			StockRequestModel model = new StockRequestModel()
-			{
-				DeliveredOn = new DateTime(),
-				Items = new List<StockRequestItem>(),
-				UserName = "Párek v rohlíku"
-			};
-			model.Items.Add(new StockRequestItem() { Amount = 5, Title = "Metal Drill", TotalPrice = 250 });
-			model.Items.Add(new StockRequestItem() { Amount = 10, Title = "Ear Muffs", TotalPrice = 100 });
-			MailerService.SendMail("StockRequest", "jakub.senk@keenmate.com", model);*/
+			}
+
 			return View();
 		}
 
@@ -47,6 +40,10 @@ namespace StockRequestApprovalWeb.Controllers
 			return View();
 		}
 
+		public ActionResult TestMail()
+		{
+			return View();
+		}
 		public ActionResult Contact()
 		{
 			ViewBag.Message = "Your contact page.";

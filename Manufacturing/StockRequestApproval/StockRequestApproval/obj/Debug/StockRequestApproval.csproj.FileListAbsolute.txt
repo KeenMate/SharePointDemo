@@ -4,3 +4,9 @@ c:\users\kuba\documents\visual studio 2017\Projects\StockRequestApproval\StockRe
 c:\users\kuba\documents\visual studio 2017\Projects\StockRequestApproval\StockRequestApproval\obj\Debug\StockRequestApproval.dll
 c:\users\kuba\documents\visual studio 2017\Projects\StockRequestApproval\StockRequestApproval\obj\Debug\StockRequestApproval.pdb
 C:\Users\Kuba\documents\visual studio 2017\Projects\StockRequestApproval\StockRequestApproval\obj\Debug\StockRequestApproval.csprojResolveAssemblyReference.cache
+C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval\bin\Debug\ApplicationInsights.config
+C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval\bin\Debug\StockRequestApproval.dll.config
+C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval\bin\Debug\StockRequestApproval.pdb
+C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval\obj\Debug\StockRequestApproval.csprojResolveAssemblyReference.cache
+C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval\obj\Debug\StockRequestApproval.dll
+C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval\obj\Debug\StockRequestApproval.pdb

@@ -1,1 +1,1 @@
-C:\Users\Kuba\documents\visual studio 2017\Projects\StockRequestApproval\StockRequestApproval\bin\Debug\StockRequestApproval.debugapp
+C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval\bin\Debug\StockRequestApproval.debugapp
