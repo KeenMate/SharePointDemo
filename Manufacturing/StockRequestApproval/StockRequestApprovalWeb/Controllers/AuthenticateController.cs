@@ -20,27 +20,17 @@ namespace StockRequestApprovalWeb.Controllers
 			return View();
 		}
 
-		public ActionResult Authenticate(string usr, string pass, string sp)
+		public void Authenticate()
 		{
-			var post = string.Format(Helpers.Assets.AuthenticationTemplate.SAMLTemplate, usr, pass, ConfigurationManager.AppSettings["endpoint"]);
-			AuthenticationHelper a = new AuthenticationHelper();
-			string responseXML = a.GetSAMLToken(post);
-			string token = a.ExtractSAMLToken(responseXML);
-			Response.SetCookie(new HttpCookie("SPTokenForCC", token));
-			if (token != string.Empty)
-			{
-				Dictionary<string, string> d = a.GetSPOCookies(token, Request.UserAgent);
-				foreach (var item in d)
-				{
-					Response.SetCookie(new HttpCookie(item.Key, item.Value));
-				}
-			}
-			return RedirectToAction("Index", "Authenticate", new { SPHostUrl = sp });
+			string url = TokenHelper.GetAuthorizationUrl(ConfigurationManager.AppSettings["SharepointUrl"], "Web.Manage", "https://localhost:44382/RedirectAccept");
+			Response.Redirect(url);
 		}
 
-		public ActionResult TestClientContext()
+		public void TestClientContext()
 		{
-			var cContext = TokenHelper.GetClientContextWithAccessToken(Request.QueryString["SPHostUrl"], Request.Cookies["SPTokenForCC"].Value);
+
+			/*
+			var cContext = TokenHelper.GetClientContextWithAccessToken(Request.QueryString["SPHostUrl"], "");
 			cContext.Load(cContext.Web.CurrentUser);
 			cContext.ExecuteQuery();
 			var spContext = SharePointContextProvider.Current.GetSharePointContext(HttpContext);
@@ -53,8 +43,8 @@ namespace StockRequestApprovalWeb.Controllers
 					clientContext.ExecuteQuery();
 				}
 			}
-
-			return RedirectToAction("Index", "Authenticate", new { SPHostUrl = Request.QueryString["SPHostUrl"] });
+			*/
+			//return RedirectToAction("Index", "Authenticate", new { SPHostUrl = Request.QueryString["SPHostUrl"] });
 		}
 	}
 }

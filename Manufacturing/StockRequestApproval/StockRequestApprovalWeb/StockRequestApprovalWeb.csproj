@@ -203,6 +203,7 @@
     <Compile Include="Controllers\AuthenticateController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MailController.cs" />
+    <Compile Include="Controllers\RedirectAcceptController.cs" />
     <Compile Include="Controllers\ResponseController.cs" />
     <Compile Include="Filters\SharePointContextFilterAttribute.cs" />
     <Compile Include="Global.asax.cs">
@@ -215,6 +216,7 @@
     </Compile>
     <Compile Include="Helpers\AuthenticationHelper.cs" />
     <Compile Include="Helpers\ConfigurationHelper.cs" />
+    <Compile Include="Helpers\CookieHelper.cs" />
     <Compile Include="Managers\NotificationManager.cs" />
     <Compile Include="Models\ApiKeys.cs" />
     <Compile Include="Models\ApprovalRequestModel.cs" />
@@ -295,6 +297,7 @@
     <Content Include="Views\Home\ConnectTo.cshtml" />
     <Content Include="Views\Mail\Index.cshtml" />
     <Content Include="Views\Authenticate\Index.cshtml" />
+    <Content Include="Views\RedirectAccept\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

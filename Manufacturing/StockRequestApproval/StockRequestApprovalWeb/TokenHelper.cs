@@ -24,6 +24,7 @@ using AudienceRestriction = Microsoft.IdentityModel.Tokens.AudienceRestriction;
 using AudienceUriValidationFailedException = Microsoft.IdentityModel.Tokens.AudienceUriValidationFailedException;
 using SecurityTokenHandlerConfiguration = Microsoft.IdentityModel.Tokens.SecurityTokenHandlerConfiguration;
 using X509SigningCredentials = Microsoft.IdentityModel.SecurityTokenService.X509SigningCredentials;
+using StockRequestApprovalWeb.Helpers;
 
 namespace StockRequestApprovalWeb
 {
@@ -214,7 +215,7 @@ namespace StockRequestApprovalWeb
                 oauth2Response =
                     client.Issue(AcsMetadataParser.GetStsUrl(targetRealm), oauth2Request) as OAuth2AccessTokenResponse;
             }
-            catch (RequestFailedException)
+            catch (RequestFailedException ex)
             {
                 if (!string.IsNullOrEmpty(SecondaryClientSecret))
                 {
@@ -709,11 +710,11 @@ namespace StockRequestApprovalWeb
         //
         // Hosted add-in configuration
         //
-        private static readonly string ClientId = string.IsNullOrEmpty(WebConfigurationManager.AppSettings.Get("ClientId")) ? WebConfigurationManager.AppSettings.Get("HostedAppName") : WebConfigurationManager.AppSettings.Get("ClientId");
+        private static readonly string ClientId = string.IsNullOrEmpty(WebConfigurationManager.AppSettings.Get("ClientId")) ? ConfigurationHelper.GetApiKey("ClientId") : WebConfigurationManager.AppSettings.Get("ClientId");
         private static readonly string IssuerId = string.IsNullOrEmpty(WebConfigurationManager.AppSettings.Get("IssuerId")) ? ClientId : WebConfigurationManager.AppSettings.Get("IssuerId");
         private static readonly string HostedAppHostNameOverride = WebConfigurationManager.AppSettings.Get("HostedAppHostNameOverride");
         private static readonly string HostedAppHostName = WebConfigurationManager.AppSettings.Get("HostedAppHostName");
-        private static readonly string ClientSecret = string.IsNullOrEmpty(WebConfigurationManager.AppSettings.Get("ClientSecret")) ? WebConfigurationManager.AppSettings.Get("HostedAppSigningKey") : WebConfigurationManager.AppSettings.Get("ClientSecret");
+        private static readonly string ClientSecret = string.IsNullOrEmpty(WebConfigurationManager.AppSettings.Get("ClientSecret")) ? ConfigurationHelper.GetApiKey("ClientSecret") : WebConfigurationManager.AppSettings.Get("ClientSecret");
         private static readonly string SecondaryClientSecret = WebConfigurationManager.AppSettings.Get("SecondaryClientSecret");
         private static readonly string Realm = WebConfigurationManager.AppSettings.Get("Realm");
         private static readonly string ServiceNamespace = WebConfigurationManager.AppSettings.Get("Realm");
