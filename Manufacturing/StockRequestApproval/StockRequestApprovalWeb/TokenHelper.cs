@@ -215,7 +215,7 @@ namespace StockRequestApprovalWeb
                 oauth2Response =
                     client.Issue(AcsMetadataParser.GetStsUrl(targetRealm), oauth2Request) as OAuth2AccessTokenResponse;
             }
-            catch (RequestFailedException ex)
+            catch (RequestFailedException)
             {
                 if (!string.IsNullOrEmpty(SecondaryClientSecret))
                 {
