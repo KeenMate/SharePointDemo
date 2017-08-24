@@ -84,6 +84,8 @@ namespace StockRequestApprovalWeb.Controllers
 					{
 						if (data.Status == Status.Rejected)
 							throw new Exception("This item was already rejected.");
+						if (data.Status == Status.Approved)
+							throw new Exception("This item was approved. You can not reject it anymore.");
 						if (!data.AllowedApprovers.Any(x => x.LookupId == clientContext.Web.CurrentUser.Id))
 							throw new Exception("You are not allowed to reject this request.");
 						data.UpdateItem("Approved", "Rejected");

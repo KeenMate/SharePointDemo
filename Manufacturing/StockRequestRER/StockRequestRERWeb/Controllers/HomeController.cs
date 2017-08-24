@@ -59,6 +59,14 @@ namespace StockRequestRERWeb.Controllers
 						"RERHostReceiver",
 						"https://stockrequest.servicebus.windows.net/2117014651/1934699884/obj/b2f02062-1030-4c24-9a8f-e3adfd502bf7/Services/StockRequestRER.svc",
 								10);
+					RERUtility.AddListItemRemoteEventReceiver(
+						clientContext,
+						listTitle,
+						EventReceiverType.ItemAdding,
+						EventReceiverSynchronization.Synchronous,
+						"RERHostReceiver",
+						"https://stockrequest.servicebus.windows.net/2117014651/1934699884/obj/b2f02062-1030-4c24-9a8f-e3adfd502bf7/Services/StockRequestRER.svc",
+								10);
 				}
 			}
 			return RedirectToAction("Index", new { SPHostUrl = spContext.SPHostUrl.ToString() });

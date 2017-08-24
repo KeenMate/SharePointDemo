@@ -3,8 +3,9 @@
     "",
     "\\Manufacturing",
     "\\Manufacturing\\StockRequestApproval",
-    "\\Manufacturing\\StockRequestRER"
+    "\\Manufacturing\\StockRequestRER",
+    "\\Manufacturing\\StockRequestRER\\StockRequestRER"
   ],
-  "SelectedNode": "\\Manufacturing\\StockRequestRER",
+  "SelectedNode": "\\Manufacturing\\StockRequestApproval\\StockRequestApproval.sln",
   "PreviewInSolutionExplorer": false
 }

@@ -1,0 +1,1 @@
+C:\Git\KM\SharePointDemo\Manufacturing\StockRequestRER\StockRequestRER\bin\Debug\app.publish\1.0.0.0\StockRequestRER.app

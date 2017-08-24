@@ -12,5 +12,6 @@ namespace StockRequestRERWeb.Models
 		public string RequesterName { get; set; }
 		public string RequesterEmail { get; set; }
 		public Guid ItemGuid { get; set; }
+		public string Url { get; set; }
 	}
 }

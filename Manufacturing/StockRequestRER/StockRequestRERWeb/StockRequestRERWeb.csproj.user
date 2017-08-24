@@ -9,6 +9,8 @@
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <ProjectView>ProjectFiles</ProjectView>
+    <ProfileToSelectInPublishDialog>test</ProfileToSelectInPublishDialog>
+    <NameOfLastUsedPublishProfile>test</NameOfLastUsedPublishProfile>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
