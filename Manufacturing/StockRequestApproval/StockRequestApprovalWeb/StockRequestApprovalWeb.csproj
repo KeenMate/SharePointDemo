@@ -18,7 +18,7 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>44382</IISExpressSSLPort>
+    <IISExpressSSLPort>44322</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -26,6 +26,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetOfficeVersion>16.1</TargetOfficeVersion>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -202,26 +203,21 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AuthenticateController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\MailController.cs" />
     <Compile Include="Controllers\RedirectAcceptController.cs" />
     <Compile Include="Controllers\ResponseController.cs" />
     <Compile Include="Filters\SharePointContextFilterAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\Assets\AuthenticationTemplate.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AuthenticationTemplate.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Helpers\AuthenticationHelper.cs" />
     <Compile Include="Helpers\ConfigurationHelper.cs" />
     <Compile Include="Helpers\CookieHelper.cs" />
-    <Compile Include="Managers\NotificationManager.cs" />
+    <Compile Include="Helpers\SharepointListHelper.cs" />
     <Compile Include="Models\ApiKeys.cs" />
     <Compile Include="Models\ApprovalRequestModel.cs" />
     <Compile Include="Models\EmailMessage.cs" />
     <Compile Include="Models\MailTemplatesKeys.cs" />
+    <Compile Include="Models\StockRequestApproveData.cs" />
+    <Compile Include="Models\StockRequestApproveDataMapper.cs" />
     <Compile Include="Models\StockRequestItem.cs" />
     <Compile Include="Models\StockRequestModel.cs" />
     <Compile Include="Models\TemplateDefinitionModel.cs" />
@@ -229,18 +225,6 @@
     <Compile Include="Models\SendEmailViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RERUtility.cs" />
-    <Compile Include="Services\AppEventReceiver.svc.cs">
-      <DependentUpon>AppEventReceiver.svc</DependentUpon>
-    </Compile>
-    <Compile Include="Services\JsonLoader.cs" />
-    <Compile Include="Services\MailerService.cs" />
-    <Compile Include="Services\ITokenRepository.cs" />
-    <Compile Include="Services\StockRequestEventReceiver.svc.cs">
-      <DependentUpon>StockRequestEventReceiver.svc</DependentUpon>
-    </Compile>
-    <Compile Include="Services\TemplateService.cs" />
-    <Compile Include="Services\TokenCache.cs" />
-    <Compile Include="Services\TokenRepository.cs" />
     <Compile Include="SharePointContext.cs" />
     <Compile Include="Models\StockRequestMapper.cs" />
     <Compile Include="TokenHelper.cs" />
@@ -259,6 +243,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="api.keys.json" />
+    <Content Include="CamlQueryTemplates.json" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -271,15 +256,10 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\spcontext.js" />
-    <Content Include="Services\AppEventReceiver.svc" />
-    <Content Include="Services\StockRequestEventReceiver.svc" />
-    <Content Include="Templates\Footer.cshtml" />
-    <Content Include="Templates\ApprovalRequest.cshtml" />
     <Content Include="templateDefs.json" />
-    <None Include="Templates\Head.cshtml" />
-    <None Include="Templates\Header.cshtml" />
-    <None Include="Templates\StockRequest.cshtml" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -293,11 +273,9 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Home\Connect.cshtml" />
-    <Content Include="Views\Home\ConnectTo.cshtml" />
-    <Content Include="Views\Mail\Index.cshtml" />
     <Content Include="Views\Authenticate\Index.cshtml" />
     <Content Include="Views\RedirectAccept\Index.cshtml" />
+    <Content Include="Views\Shared\Close.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -318,12 +296,6 @@
   <ItemGroup>
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Helpers\Assets\AuthenticationTemplate.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>AuthenticationTemplate.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -342,7 +314,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>59531</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:59531/</IISUrl>
+          <IISUrl>http://localhost:44382</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

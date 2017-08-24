@@ -1,0 +1,3 @@
+﻿{
+	"CompareText": "<View><Query><Where><Eq><FieldRef Name='{0}'/><Value Type='Text'>{1}</Value></Eq></Where></View></Query>"
+}

@@ -176,5 +176,4 @@ C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval
 C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApprovalWeb\bin\Microsoft.AI.ServerTelemetryChannel.xml
 C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApprovalWeb\bin\Microsoft.AI.WindowsServer.xml
 C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApprovalWeb\bin\Microsoft.AI.Web.xml
-C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApprovalWeb\obj\Debug\StockRequestApprovalWeb.Helpers.Assets.AuthenticationTemplate.resources
-C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApprovalWeb\obj\Debug\StockRequestApprovalWeb.csproj.GenerateResource.Cache
+C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApprovalWeb\obj\Debug\StockRequestApprovalWeb.csproj.CoreCompileInputs.cache

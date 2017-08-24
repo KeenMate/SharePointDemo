@@ -10,6 +10,9 @@ C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval
 C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval\obj\Debug\StockRequestApproval.csprojResolveAssemblyReference.cache
 C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval\obj\Debug\StockRequestApproval.dll
 C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval\obj\Debug\StockRequestApproval.pdb
+C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval\bin\Debug\Microsoft.ServiceBus.dll
+C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval\bin\Debug\Microsoft.ServiceBus.xml
+C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval\obj\Debug\StockRequestApproval.csproj.CoreCompileInputs.cache
 C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval\bin\Debug\roslyn\csc.exe
 C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval\bin\Debug\roslyn\csc.exe.config
 C:\Git\KM\SharePointDemo\Manufacturing\StockRequestApproval\StockRequestApproval\bin\Debug\roslyn\csc.rsp

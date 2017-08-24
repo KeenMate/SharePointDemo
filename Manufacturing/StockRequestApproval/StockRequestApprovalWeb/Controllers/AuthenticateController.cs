@@ -22,7 +22,7 @@ namespace StockRequestApprovalWeb.Controllers
 
 		public void Authenticate()
 		{
-			string url = TokenHelper.GetAuthorizationUrl(ConfigurationManager.AppSettings["SharepointUrl"], "Web.Manage", "https://localhost:44382/RedirectAccept");
+			string url = TokenHelper.GetAuthorizationUrl(ConfigurationManager.AppSettings["SharepointUrl"], "Web.Manage", "https://localhost:44322/RedirectAccept");
 			Response.Redirect(url);
 		}
 

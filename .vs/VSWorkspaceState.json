@@ -2,8 +2,7 @@
   "ExpandedNodes": [
     "",
     "\\Manufacturing",
-    "\\Manufacturing\\StockRequestApproval",
-    "\\Manufacturing\\StockRequestApproval\\StockRequestApprovalWeb\\Models"
+    "\\Manufacturing\\StockRequestApproval"
   ],
   "SelectedNode": "\\Manufacturing\\StockRequestApproval\\StockRequestApproval.sln",
   "PreviewInSolutionExplorer": false
