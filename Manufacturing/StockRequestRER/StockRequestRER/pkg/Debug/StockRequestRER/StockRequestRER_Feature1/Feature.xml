@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Id="6a6f7ed3-6dd4-4c1e-9452-02b3f914a05b" Scope="Web" Title="StockRequestRER Feature1" Version="1.0.0.0">
+  <ElementManifests>
+    <ElementManifest Location="StockRequestRER\Elements.xml" />
+  </ElementManifests>
+  <UpgradeActions>
+    <VersionRange>
+      <ApplyElementManifests>
+        <ElementManifest Location="StockRequestRER\Elements.xml" />
+      </ApplyElementManifests>
+    </VersionRange>
+  </UpgradeActions>
+</Feature>
