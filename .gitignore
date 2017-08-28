@@ -1,6 +1,9 @@
 .vs/
 .vscode/
 
+# my PS upload script
+UploadScript.ps1
+
 api.keys.json
 
 # packages
