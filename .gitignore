@@ -1,2 +1,8 @@
 .vs/
 api.keys.json
+
+# packages
+node_modules
+
+# build
+dist
