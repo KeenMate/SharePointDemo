@@ -1,4 +1,6 @@
 .vs/
+.vscode/
+
 api.keys.json
 
 # packages
