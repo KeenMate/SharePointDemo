@@ -22,7 +22,7 @@ export default {
 				this.$emit('searchChanged', this.supplierName);
 		},
 		onFilterCancel() {
-			this.$router.push({ name: 'paged', params: { pageSize: this.$route.params.pageSize, pageNumber: 1 }, query: undefined });
+			this.$router.go(-1);
 		}
 	},
 	mounted() {

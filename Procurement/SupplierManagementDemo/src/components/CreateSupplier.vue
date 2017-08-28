@@ -27,7 +27,7 @@
 		<button class="btn waves-effect waves-light green" v-on:click.prevent="SubmitForm()">Add new Supplier
 			<i class="material-icons right">add</i>
 		</button>
-		<button class="right btn waves-effect waves-light red" @click="$router.push({ name: 'paged', params: { pageNumber: 1, pageSize: 5}})">Cancel</button>
+		<button class="right btn waves-effect waves-light red" @click="$router.go(-1)">Cancel</button>
 	</div>
 </template>
 

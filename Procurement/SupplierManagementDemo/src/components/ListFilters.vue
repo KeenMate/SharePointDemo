@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="col s4">
-			<select v-model.number="pageSize" class="browser-default">
+			<select v-model="pageSize" @change="onPageSizeChanged" class="browser-default">
 				<option value="5" selected>5</option>
 				<option value="10">10</option>
 				<option value="15">15</option>
@@ -17,10 +17,16 @@
 <script>
 export default {
 	props: ['pageSize'],
-	watch: {
-		'pageSize'(val) {
-			this.$emit('pageSizeChanged', val);
+	methods: {
+		onPageSizeChanged(newVal) {
+			console.log('new val of pageSize is: ');
+			console.log(newVal.currentTarget.value);
+			if (newVal.currentTarget.value != this.$route.params.pageSize)
+				this.$emit('pageSizeChanged', newVal.currentTarget.value);
 		}
+	},
+	mounted() {
+		console.log('filter mounted with prop: ' + this.pageSize);
 	}
 }
 </script>

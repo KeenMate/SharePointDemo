@@ -7,7 +7,7 @@
 			<div class="row">
 				<!-- PRE-HEADER Filters and pagination here -->
 				<div class="col s4">
-					<filters @pageSizeChanged="onPageSizeChanged"></filters>
+					<filters :pageSize="PageSize" @pageSizeChanged="onPageSizeChanged"></filters>
 				</div>
 				<div class="col s8">
 					<pagination class="right" :page-count="PageCount" @pageChanged="onPageChanged"></pagination>
@@ -118,10 +118,14 @@ export default {
 	},
 	computed: {
 		PageCount() {
+			console.log('PageCount computed called');
 			return (Math.ceil(this.suppliers.length / this.$route.params.pageSize) === 0 ? 1 : Math.ceil(this.suppliers.length / this.$route.params.pageSize));
 		},
 		CurrentPageData() {
 			return this.suppliers.slice((this.$route.params.pageNumber - 1) * this.$route.params.pageSize, this.$route.params.pageNumber * this.$route.params.pageSize);
+		},
+		PageSize() {
+			return this.$route.params.pageSize % 5 === 0 ? this.$route.params.pageSize : 5;
 		}
 	},
 	methods: {
@@ -152,10 +156,11 @@ export default {
 		},
 		onPageSizeChanged(size) {
 			if (size != this.$route.params.pageSize && size % 5 === 0 && size > 0 && size <= 200) {
-				this.pageSize = size;
 				this.$router.push({ name: 'paged', params: { pageNumber: 1, pageSize: size }, query: this.$route.query });
-			} else
+			} else {
+				console.log('pageSize Changed handler');
 				this.$router.push({ name: 'paged', params: { pageNumber: 1, pageSize: 5 }, query: this.$route.query });
+			}
 		},
 		onDataChanged() {
 			this.UpdateList();
@@ -188,7 +193,14 @@ export default {
 		},
 		UpdateList() {
 			if (Number(this.$route.params.pageNumber) > this.PageCount || Number(this.$route.params.pageNumber) < 1) {
-				this.$router.push({ name: 'paged', params: { pageSize: this.$route.params.pageSize, pageNumber: 1 } });
+				this.$router.push({
+					name: 'paged',
+					params: {
+						pageSize: this.$route.params.pageSize,
+						pageNumber: 1,
+					},
+					query: this.$route.query
+				});
 			}
 			if (this.searchExpression)
 				this.filterList();
@@ -209,10 +221,9 @@ export default {
 	},
 	created() {
 		this.UpdateList();
-		this.pageSize = this.$route.params.pageSize ? this.$route.params.pageSize : 5;
 	},
 	mounted() {
 		$('.modal').modal();
 	}
-} // this.pageSize = (this.$route.params.pageSize % 5 === 0) ? this.$route.params.pageSize : 5;
+}
 </script>

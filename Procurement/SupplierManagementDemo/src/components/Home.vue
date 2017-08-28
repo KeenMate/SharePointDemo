@@ -27,6 +27,20 @@ export default {
 			return this.$route.query.supplierName ? this.$route.query.supplierName : '';
 		}
 	},
+	watch: {
+		'$route'(to, from) {
+			if (to.params.pageSize%5 !== 0) {
+				this.$router.push({
+					name: 'paged',
+					params: {
+						pageSize: 5,
+						pageNumber: 1
+					},
+					query: this.$route.query
+				})
+			}
+		}
+	},
 	methods: {
 		onSearchChanged(val) {
 			console.log('search changed in home');
@@ -37,9 +51,9 @@ export default {
 </script>
 
 <style>
-	a i,
-	.input-field i {
-		cursor: pointer;
-	}
+a i,
+.input-field i {
+	cursor: pointer;
+}
 </style>
 
