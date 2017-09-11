@@ -3,7 +3,7 @@
 		<div class="modal-content">
 			<div class="centered row">
 				<div class="input-field">
-					<label class="active">mySupplier Name (original: {{supplierCopy.CompanyName}})</label>
+					<label class="active">Supplier Name (original: {{supplierCopy.CompanyName}})</label>
 					<input type="text" v-model="mySupplier.CompanyName" />
 				</div>
 				<div class="input-field">
@@ -29,6 +29,7 @@
 import ajaxService from './../services/ajaxServices';
 
 export default {
+	name: 'EditSupplierComp',
 	props: [
 		'supplier'
 	],

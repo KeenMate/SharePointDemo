@@ -30,6 +30,7 @@
 
 <script>
 export default {
+	name: 'DeleteSupplierConfirmComp',
 	methods: {
 		deleteConfirmed() {
 			$('.modal').modal('close');

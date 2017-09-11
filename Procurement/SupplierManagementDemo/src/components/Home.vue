@@ -18,6 +18,7 @@ import MyList from './SuppliersList.vue'
 import MySearchComponent from './SearchForm.vue'
 
 export default {
+	name: 'HomeComp',
 	components: {
 		MyList,
 		MySearchComponent

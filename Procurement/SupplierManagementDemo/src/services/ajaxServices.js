@@ -1,9 +1,16 @@
 const ajaxService = {
-	RequestExistingSuppliers (
-		url = "https://keenmate.sharepoint.com/sites/demo/procurement/_api/web/lists/getbytitle('Suppliers')/items"
+	defaultUrl: _spPageContextInfo.webAbsoluteUrl,
+	defaultListName: "Suppliers",
+	UrlToList(listName = defaultListName) {
+		return `/_api/web/lists/getbytitle('${listName}')/items`;
+	},
+
+	RequestAllItems(
+		url = this.defaultUrl,
+		listName = this.defaultListName
 	) {
 		return $.ajax({
-			url: url,
+			url: url + this.UrlToList(listName),
 			method: 'GET',
 			headers: {
 				'Accept': 'application/json; odata=verbose'
@@ -11,7 +18,8 @@ const ajaxService = {
 		})
 	},
 	RequestNewDigestValue(
-		url = 'https://keenmate.sharepoint.com/sites/demo') {
+		url = _spPageContextInfo.siteAbsoluteUrl
+	) {
 		var digest;
 		$.ajax({
 			url: url + '/_api/contextinfo',
@@ -26,11 +34,11 @@ const ajaxService = {
 	AddNewItemToSPList(
 		digest,
 		item,
-		url = 'https://keenmate.sharepoint.com/sites/demo/procurement',
-		listName = 'Suppliers'
+		url = this.defaultUrl,
+		listName = this.defaultListName
 	) {
 		return $.ajax({
-			url: url + "/_api/web/lists/getbytitle('" + listName + "')/items",
+			url: url + this.UrlToList(listName),
 			data: JSON.stringify({
 				'__metadata': {
 					type: 'SP.Data.' + listName + 'ListItem'
@@ -55,11 +63,11 @@ const ajaxService = {
 		itemId,
 		payload,
 		digest,
-		url = 'https://keenmate.sharepoint.com/sites/demo/procurement',
-		listName = 'Suppliers'
+		url = this.defaultUrl,
+		listName = this.defaultListName
 	) {
 		return $.ajax({
-			url: url + "/_api/web/lists/getbytitle('" + listName + "')/Items(" + itemId + ")",
+			url: url + this.UrlToList(listName) + `(${itemId})`,
 			data: JSON.stringify(payload),
 			type: 'MERGE',
 			contentType: 'application/json; odata=verbose',
@@ -73,12 +81,11 @@ const ajaxService = {
 	DeleteSupplier(
 		itemId,
 		digest,
-		url = 'https://keenmate.sharepoint.com/sites/demo/procurement',
-		listName = 'suppliers'
+		url = this.defaultUrl,
+		listName = this.defaultListName
 	) {
-		console.log('delete called with item id: ' + itemId);
 		return $.ajax({
-			url: url + "/_api/web/lists/getbytitle('" + listName + "')/Items(" + itemId + ")",
+			url: url + this.UrlToList(listName) + `(${itemId})`,
 			type: 'DELETE',
 			headers: {
 				'Accept': 'application/json; odata=verbose',
@@ -90,15 +97,12 @@ const ajaxService = {
 	filterSuppliers(
 		expression,
 		digestValue,
-		listName = 'Suppliers',
-		url = 'https://keenmate.sharepoint.com/sites/demo/procurement'
+		url = this.defaultUrl,
+		listName = this.defaultListName
 	) {
-		console.log('from filter suppliers function in ajax service: expression is: ' + expression);
 		var buildedQuery = encodeURI("/_vti_bin/listdata.svc/" + listName + "?" +
 			"$filter=substringof('" + expression + "',SupplierName) or " +
-			//"TaxID eq '" + expression + "' or" +
 			"substringof('" + expression + "',Street) or " +
-			//"ZIPCode eq '" + expression + "' or " +
 			"substringof('" + expression + "',City)&$orderby=Created");
 		console.log('builded query: ' + buildedQuery);
 		return $.ajax({
@@ -111,5 +115,3 @@ const ajaxService = {
 	}
 }
 export default ajaxService;
-
-// '/sites/demo/procurement/_api/web/lists/getbytitle("suppliers")/items'

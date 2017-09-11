@@ -90,7 +90,7 @@ import ModalEdit from './EditSupplier.vue'
 import DeleteConfirmation from './DeleteSupplierConfirm.vue'
 
 export default {
-	name: 'mylist',
+	name: 'MyListComp',
 	components: {
 		Pagination,
 		Filters,
@@ -207,8 +207,7 @@ export default {
 			else {
 				this.isLoading = true;
 				var self = this;
-				ajaxService.RequestExistingSuppliers()
-					.done(function(response) {
+				ajaxService.RequestAllItems().done(function(response) {
 						self.isLoading = false;
 						self.suppliers = mapService.MapSPResponseToSuppliers(response.d.results).reverse();
 						self.suppliers.forEach(function(supplier, index) {
