@@ -36,21 +36,9 @@ namespace StockRequestApprovalWeb.Controllers
 
 			return View();
 		}
-
-		public ActionResult TestMail()
-		{
-			return View();
-		}
 		public ActionResult Contact()
 		{
 			ViewBag.Message = "Your contact page.";
-
-			return View();
-		}
-
-		public ActionResult ConnectTo()
-		{
-			ViewBag.Message = "";
 
 			return View();
 		}

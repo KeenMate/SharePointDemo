@@ -11,6 +11,7 @@ namespace StockRequestApprovalWeb.Models
 		public int Amount { get; set; }
 		public int TotalPrice { get; set; }
 		public string MaterialType { get; set; }
-		public int EditedID { get; set; }
+		public int StockItemID { get; set; }
+		public int StockID { get; set; }
 	}
 }

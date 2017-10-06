@@ -1,6 +1,9 @@
 ﻿using Microsoft.SharePoint.Client;
+using StockRequestRERWeb.Helpers;
+using StockRequestRERWeb.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -25,6 +28,19 @@ namespace StockRequestRERWeb.Controllers
 					ViewBag.HostLists = hostListColl.Select(l => new SelectListItem() { Text = l.Title, Value = l.Title });
 				}
 			}
+			Managers.NotificationManager m = new Managers.NotificationManager(ConfigurationHelper.GetApiKey(ApiKeys.SendGridApiKey), ConfigurationManager.AppSettings["templateDefsPath.json"]);
+			ApprovalRequestModel model = new ApprovalRequestModel()
+			{
+				ApproverName = "Someone",
+				Items = new List<StockRequestItem>(),
+				RequesterEmail = "foo@foo.foo",
+				RequesterName = "foo",
+				Url = "https://localhost"
+			};
+			model.Items.Add(new StockRequestItem() { Amount = 10, Title = "Some item", TotalPrice = 999 });
+			model.Items.Add(new StockRequestItem() { Amount = 10, Title = "Some other item", TotalPrice = 499 });
+			model.Items.Add(new StockRequestItem() { Amount = 10, Title = "Some great item", TotalPrice = 4999 });
+			m.SendApprovalRequest(model, "foo@foo.foo");
 			return View();
 		}
 

@@ -8,6 +8,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using StockRequestApprovalWeb.Models;
+using StockRequestApprovalWeb.Services;
+using System.IO;
 
 namespace StockRequestApprovalWeb.Controllers
 {
@@ -126,12 +128,13 @@ namespace StockRequestApprovalWeb.Controllers
 			{
 				if (!data.ApprovedBy.Select(x => x.LookupId).Except(data.AllowedApprovers.Select(x => x.LookupId)).Any())
 				{
-					ListItemCollection coll = SharepointListHelper.GetRequiredItems(clientContext, model.Items);
+					ListItemCollection stockItemList = SharepointListHelper.GetListItems(clientContext, ConfigurationManager.AppSettings["StockItemsListName"]);
 					clientContext.ExecuteQuery();
+					ListItemCollection stockList = SharepointListHelper.GetRequiredItems(clientContext, model.Items, stockItemList);
 
-					SharepointListHelper.AreItemsAvaiable(clientContext, model.Items, coll);
+					SharepointListHelper.AreItemsAvaiable(clientContext, model.Items, stockItemList, stockList);
 
-					SharepointListHelper.WithdrawItems(clientContext, model.Items, coll);
+					SharepointListHelper.WithdrawItems(clientContext, model.Items, stockList);
 					data.UpdateItem("Approved", "Approved");
 				}
 				else
@@ -142,11 +145,27 @@ namespace StockRequestApprovalWeb.Controllers
 
 			data.UpdateItem("ApprovedBy", data.ApprovedBy.ToArray());
 			clientContext.ExecuteQuery();
+
+			TemplateModel m = new TemplateModel();
+			ApprovalRequestModel am = new ApprovalRequestModel();
+			FieldUserValue val = (FieldUserValue)data.OriginalItem.FieldValues["Author"];
+			am.ApproverName = clientContext.Web.CurrentUser.Title;
+			am.ItemGuid = data.RequestID;
+			am.Items = data.Items;
+			am.RequesterEmail = val.Email;
+			am.RequesterName = val.LookupValue;
+			m.Model = am;
+			m.MainTemplatePath = "Templates\\ApprovalRequest.cshtml";
+			m.TemplatePaths = new List<string>();
+			m.TemplatePaths.AddRange(new string[] { "Templates\\Head.cshtml", "Templates\\Header.cshtml", "Templates\\Footer.cshtml" });
+			m.MainTemplateModelType = am.GetType();
+			string s = new TemplateService().CreateMessage(m);
+
+			
 		}
 
 		protected override void OnException(ExceptionContext filterContext)
 		{
-			Exception ex = filterContext.Exception;
 			filterContext.ExceptionHandled = true;
 
 			var model = new HandleErrorInfo(filterContext.Exception, "Response", "Reject/Approve");
@@ -156,71 +175,6 @@ namespace StockRequestApprovalWeb.Controllers
 				ViewName = "Error",
 				ViewData = new ViewDataDictionary(model)
 			};
-
 		}
 	}
-}/*if (item["Approved"].ToString() == "Rejected")
-							throw new Exception("This item was rejected. You can not approve it anymore.");
-						FieldUserValue[] users = item["ApprovedBy"] as FieldUserValue[];
-						FieldUserValue me = new FieldUserValue();
-						me.LookupId = clientContext.Web.CurrentUser.Id;
-						List<FieldUserValue> lusers = new List<FieldUserValue>();
-						if (users != null)
-							lusers = users.ToList();
-						if (lusers.Any(x => x.LookupId == clientContext.Web.CurrentUser.Id))
-							throw new Exception("You already approved this item.");
-						lusers.Add(me);
-						
-						List list = clientContext.Web.Lists.GetByTitle(ConfigurationManager.AppSettings["ConfigurationListName"]);
-						ListItemCollection confListItem = list.GetItems(new CamlQuery());
-						clientContext.Load(confListItem);
-						clientContext.ExecuteQuery();
-
-						StockRequestModel model = StockRequestMapper.MapStockRequestModel(item);
-						List<string> neededApproves = new List<string>();
-
-						foreach (StockRequestItem sitem in model.Items)
-						{
-							if (!neededApproves.Contains(sitem.MaterialType))
-								neededApproves.Add(sitem.MaterialType);
-						}
-						int cnt = 0;
-						foreach (string s in neededApproves)
-						{
-							foreach (ListItem citem in confListItem)
-							{
-								if (citem["Title"].ToString() == s)
-								{
-									if (lusers.Any(x => x.LookupId == ((FieldUserValue)citem["Value"]).LookupId))
-									{
-										cnt++;
-										break;
-									}
-								}
-							}
-						}
-						List stockList = clientContext.Web.Lists.GetByTitle(ConfigurationManager.AppSettings["StockListName"]);
-						CamlQuery query = new CamlQuery();
-						query.ViewXml = $@"<View><Query><Where><Or>";
-						foreach (StockRequestItem stockitem in model.Items)
-						{
-							query.ViewXml += $"<Eq><FieldRef Name=\"Item\" LookupId=\"TRUE\"/><Value Type=\"Lookup\">{stockitem.EditedID}</Value></Eq>";
-						}
-						query.ViewXml += "</Or></Where></Query></View>";
-						if (model.Items.Count == 1) query.ViewXml = query.ViewXml.Replace("<Or>", "").Replace("</Or>", "");
-						ListItemCollection stockListItemCollection = stockList.GetItems(query);
-						clientContext.Load(stockListItemCollection);
-						clientContext.ExecuteQuery();
-						if (stockListItemCollection.Count != model.Items.Count)
-						{
-							throw new Exception("Some items no longer exist.");
-						}
-						foreach (ListItem stockListItem in stockListItemCollection)
-						{
-							stockListItem["Amount"] = int.Parse(stockListItem["Amount"].ToString()) - model.Items.Where(x => x.Title == stockListItem["Item"].ToString()).First().Amount;
-						}
-
-						SharepointListHelper.UpdateItem(ref item, "ApprovedBy", lusers.ToArray());
-						if (neededApproves.Count == cnt)
-							SharepointListHelper.UpdateItem(ref item, "Approved", "Approved");
-							*/
+}

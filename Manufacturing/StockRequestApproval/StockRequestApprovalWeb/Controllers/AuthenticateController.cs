@@ -22,29 +22,8 @@ namespace StockRequestApprovalWeb.Controllers
 
 		public void Authenticate()
 		{
-			string url = TokenHelper.GetAuthorizationUrl(ConfigurationManager.AppSettings["SharepointUrl"], "Web.Manage", "https://localhost:44322/RedirectAccept");
+			string url = TokenHelper.GetAuthorizationUrl(ConfigurationManager.AppSettings["SharepointUrl"], "Web.Manage", ConfigurationManager.AppSettings["RedirectUrl"]);
 			Response.Redirect(url);
-		}
-
-		public void TestClientContext()
-		{
-
-			/*
-			var cContext = TokenHelper.GetClientContextWithAccessToken(Request.QueryString["SPHostUrl"], "");
-			cContext.Load(cContext.Web.CurrentUser);
-			cContext.ExecuteQuery();
-			var spContext = SharePointContextProvider.Current.GetSharePointContext(HttpContext);
-			using (var clientContext = spContext.CreateUserClientContextForSPHost())
-			{
-				if (clientContext != null)
-				{
-					clientContext.Load(clientContext.Web.CurrentUser);
-					clientContext.Load(clientContext.Web);
-					clientContext.ExecuteQuery();
-				}
-			}
-			*/
-			//return RedirectToAction("Index", "Authenticate", new { SPHostUrl = Request.QueryString["SPHostUrl"] });
 		}
 	}
 }

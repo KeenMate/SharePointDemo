@@ -35,7 +35,7 @@ namespace StockRequestRERWeb.Managers
 		}
 
 		public void SendApprovalRequest(ApprovalRequestModel model, string to)
-		{
+		{			
 			var templModel = templates[MailTemplatesKeys.ApprovalRequestForManager];
 			model.Url = ConfigurationManager.AppSettings["approvalAppUrl"];
 			templModel.Message.To = to;

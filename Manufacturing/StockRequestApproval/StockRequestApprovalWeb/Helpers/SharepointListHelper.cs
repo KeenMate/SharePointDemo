@@ -38,11 +38,11 @@ namespace StockRequestApprovalWeb.Helpers
 			item.Update();
 		}
 
-		public static void AreItemsAvaiable(ClientContext clientContext, List<StockRequestItem> list, ListItemCollection coll)
+		public static void AreItemsAvaiable(ClientContext clientContext, List<StockRequestItem> list, ListItemCollection stockItemsList, ListItemCollection stockList)
 		{
 			foreach (var item in list)
 			{
-				var citem = coll.Where(x => (int)x["ID"] == item.EditedID).FirstOrDefault();
+				var citem = stockList.Where(x => (int)x["ID"] == item.StockID).FirstOrDefault();
 				if (citem == null)
 					throw new Exception($"You can not approve this request. {item.Title} is not in stock.");
 				if (int.Parse(citem["Amount"].ToString()) - item.Amount < 0)
@@ -53,7 +53,7 @@ namespace StockRequestApprovalWeb.Helpers
 		{
 			foreach (var item in coll)
 			{
-				var citem = list.Where(x => x.EditedID == (int)item["ID"]).First();
+				var citem = list.Where(x => x.StockID == (int)item["ID"]).First();
 				double pricePerUnit = citem.TotalPrice / citem.Amount;
 				if (int.Parse(item["Amount"].ToString()) - citem.Amount == 0)
 				{
@@ -76,9 +76,32 @@ namespace StockRequestApprovalWeb.Helpers
 			return coll;
 		}
 
-		public static ListItemCollection GetRequiredItems(ClientContext clientContext, List<StockRequestItem> list)
+		public static ListItemCollection GetRequiredItems(ClientContext clientContext, List<StockRequestItem> list, ListItemCollection stockItemsList)
 		{
 			CamlQuery query = new CamlQuery();
+			query.ViewXml = "<View><Query><Where><In><FieldRef Name=\"Item\" LookupId=\"TRUE\"/><Values>";
+			foreach (var item in list)
+			{
+				var citem = stockItemsList.Where(x => (int)x["ID"] == item.StockItemID).FirstOrDefault();
+				if (citem == null)
+					throw new Exception($"Item {item.Title} was not found in list of avaiable items.");
+				query.ViewXml += $"<Value Type=\"Lookup\">{item.StockItemID}</Value>";
+			}
+			query.ViewXml += "</Values></In></Where></Query></View>";
+			if (list.Count == 1) query.ViewXml = query.ViewXml.TrimQuery();
+
+			ListItemCollection stockList = GetListItems(clientContext, ConfigurationManager.AppSettings["StockListName"], query);
+			clientContext.Load(stockList);
+			clientContext.ExecuteQuery();
+
+			foreach (var item in stockList)
+			{
+				list.First(x => x.StockItemID == ((FieldLookupValue)item["Item"]).LookupId).StockID = int.Parse(item["ID"].ToString());
+			}
+
+
+			/*
+			query = new CamlQuery();
 
 			query.ViewXml = $"<View><Query><Where><In><FieldRef Name=\"Item\"/><Values>";
 			foreach (var item in list)
@@ -87,10 +110,18 @@ namespace StockRequestApprovalWeb.Helpers
 			}
 			query.ViewXml += "</Values></In></Where></Query></View>";
 			if (list.Count == 1) query.ViewXml = query.ViewXml.Replace("<In>", "<Eq>").Replace("</In>", "</Eq>").Replace("<Values>", "").Replace("</Values>", "");
-
 			return GetListItems(clientContext, ConfigurationManager.AppSettings["StockListName"], query);
+			*/
+			return stockList;
 		}
 
+		public static string TrimQuery(this string str)
+		{
+			return str.Replace("<In>", "<Eq>")
+				.Replace("</In>", "</Eq>")
+				.Replace("<Values>", "")
+				.Replace("</Values>", "");
+		}
 		public static List<FieldUserValue> GetNeededApproves(ClientContext clientContext, List<StockRequestItem> list)
 		{
 			List<FieldUserValue> neededApproves = new List<FieldUserValue>();
@@ -132,6 +163,10 @@ namespace StockRequestApprovalWeb.Helpers
 				if (ex.Message.Contains("401"))
 				{
 					return false;
+				}
+				else
+				{
+					throw;
 				}
 			}
 			return true;
