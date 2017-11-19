@@ -8,7 +8,6 @@ using FluentlySharepoint.Extensions;
 using System.Configuration;
 using Microsoft.SharePoint.Client;
 using StockRequestApprovalWeb.Models;
-using combit.ListLabel22;
 
 namespace StockRequestApprovalWeb.Controllers
 {
@@ -41,7 +40,8 @@ namespace StockRequestApprovalWeb.Controllers
 				CSOMOperation op = new CSOMOperation(clientContext);
 				ListItemCollection stock = op.LoadList("Stock Items").LoadList("Stock").GetItems();
 				ListItemCollection stockItems = op.SelectList("Stock Items").GetItems();
-				CombitReportModel model = new CombitReportModel();
+				DevExpressReportModel model = new DevExpressReportModel();
+				List<DevExpressReportModel> lst = new List<DevExpressReportModel>();
 				List<StockRequestItem> items = new List<StockRequestItem>();
 				model.FullName = op.Context.Web.CurrentUser.Title;				
 				foreach (ListItem item in stock)
@@ -53,21 +53,13 @@ namespace StockRequestApprovalWeb.Controllers
 					i.TotalPrice = int.Parse(item["Price"].ToString());
 					items.Add(i);
 				}
+				model.Items = items;
 				model.TotalStockItems = model.Items.Count;
 				model.TotalCost = items.Sum(x => x.TotalPrice);
-				ListLabel LL = new ListLabel();
-				LL.SetDataBinding(model, string.Empty);
-				LL.AutoProjectFile = "Report.lst";
-				LL.AutoProjectType = LlProject.Card | LlProject.FileAlsoNew;
-				try
-				{
-					// Call the designer
-					LL.Design();
-				}
-				catch (ListLabelException LlException)
-				{
-					throw LlException;					
-				}
+				lst.Add(model);
+				XtraReport1 rep = new XtraReport1();
+				rep.DataSource = lst;
+				rep.ExportToPdf(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\test.pdf");
 
 				return View();
 			}

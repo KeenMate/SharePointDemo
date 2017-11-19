@@ -6,6 +6,18 @@
 	<title>@ViewBag.Title - My ASP.NET Application</title>
 	@Styles.Render("~/Content/css")
 	@Scripts.Render("~/bundles/modernizr")
+	@Html.DevExpress().GetStyleSheets(
+				new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+				new StyleSheet { ExtensionSuite = ExtensionSuite.Report },
+				new StyleSheet { ExtensionSuite = ExtensionSuite.GridView }
+		)
+	@Html.DevExpress().GetScripts(
+				new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+				new Script { ExtensionSuite = ExtensionSuite.Report },
+				new Script { ExtensionSuite = ExtensionSuite.GridView }
+		)
+
+
 </head>
 <body>
 	<div class="navbar navbar-inverse navbar-fixed-top">

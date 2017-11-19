@@ -247,6 +247,8 @@
     </Content>
     <Content Include="api.keys.json" />
     <Content Include="CamlQueryTemplates.json" />
+    <Content Include="passwords.json" />
+    <None Include="Properties\PublishProfiles\profile1.pubxml" />
     <None Include="Properties\PublishProfiles\test.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -262,7 +264,9 @@
     <Content Include="Scripts\spcontext.js" />
     <Content Include="Services\AppEventReceiver.svc" />
     <Content Include="Services\StockRequestRER.svc" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

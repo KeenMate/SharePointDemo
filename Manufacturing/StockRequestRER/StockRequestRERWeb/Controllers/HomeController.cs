@@ -27,20 +27,7 @@ namespace StockRequestRERWeb.Controllers
 					clientContext.ExecuteQuery();
 					ViewBag.HostLists = hostListColl.Select(l => new SelectListItem() { Text = l.Title, Value = l.Title });
 				}
-			}
-			Managers.NotificationManager m = new Managers.NotificationManager(ConfigurationHelper.GetApiKey(ApiKeys.SendGridApiKey), ConfigurationManager.AppSettings["templateDefsPath.json"]);
-			ApprovalRequestModel model = new ApprovalRequestModel()
-			{
-				ApproverName = "Someone",
-				Items = new List<StockRequestItem>(),
-				RequesterEmail = "foo@foo.foo",
-				RequesterName = "foo",
-				Url = "https://localhost"
-			};
-			model.Items.Add(new StockRequestItem() { Amount = 10, Title = "Some item", TotalPrice = 999 });
-			model.Items.Add(new StockRequestItem() { Amount = 10, Title = "Some other item", TotalPrice = 499 });
-			model.Items.Add(new StockRequestItem() { Amount = 10, Title = "Some great item", TotalPrice = 4999 });
-			m.SendApprovalRequest(model, "foo@foo.foo");
+			}			
 			return View();
 		}
 
@@ -60,9 +47,16 @@ namespace StockRequestRERWeb.Controllers
 
 		[SharePointContextFilter]
 		[HttpPost]
-		public ActionResult Subscribe(string listTitle)
+		public ActionResult Subscribe(string pass, string url)
 		{
 			var spContext = SharePointContextProvider.Current.GetSharePointContext(HttpContext);
+
+			if (pass != ConfigurationHelper.GetPassword("RERPassword"))
+				return RedirectToAction("Index", new { SPHostUrl = spContext.SPHostUrl.ToString(), msg = "Wrong password" });
+
+			string listTitle = ConfigurationManager.AppSettings["StockRequestListName"];
+			if (string.IsNullOrEmpty(url))
+				url = "https://stockrequest.servicebus.windows.net/936123709/1934699884/obj/b2f02062-1030-4c24-9a8f-e3adfd502bf7/Services/StockRequestRER.svc";
 			using (var clientContext = spContext.CreateUserClientContextForSPHost())
 			{
 				if (!string.IsNullOrEmpty(listTitle))
@@ -73,7 +67,7 @@ namespace StockRequestRERWeb.Controllers
 						EventReceiverType.ItemAdded,
 						EventReceiverSynchronization.Asynchronous,
 						"RERHostReceiver",
-						"https://stockrequest.servicebus.windows.net/2117014651/1934699884/obj/b2f02062-1030-4c24-9a8f-e3adfd502bf7/Services/StockRequestRER.svc",
+						url,
 								10);
 					RERUtility.AddListItemRemoteEventReceiver(
 						clientContext,
@@ -81,11 +75,11 @@ namespace StockRequestRERWeb.Controllers
 						EventReceiverType.ItemAdding,
 						EventReceiverSynchronization.Synchronous,
 						"RERHostReceiver",
-						"https://stockrequest.servicebus.windows.net/2117014651/1934699884/obj/b2f02062-1030-4c24-9a8f-e3adfd502bf7/Services/StockRequestRER.svc",
+						url,
 								10);
 				}
 			}
-			return RedirectToAction("Index", new { SPHostUrl = spContext.SPHostUrl.ToString() });
+			return RedirectToAction("Index", new { SPHostUrl = spContext.SPHostUrl.ToString(), msg = "Something happened... now pray for it to work." });
 		}
 	}
 }

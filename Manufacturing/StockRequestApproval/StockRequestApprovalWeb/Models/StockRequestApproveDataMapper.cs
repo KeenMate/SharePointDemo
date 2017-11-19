@@ -17,9 +17,9 @@ namespace StockRequestApprovalWeb.Models
 				DeliveredOn = DateTime.Parse(item["DeliveredOn"].ToString()),
 				Items = JsonConvert.DeserializeObject<List<StockRequestItem>>(item["Data"].ToString()),
 				ApprovedBy = (item["ApprovedBy"] as FieldUserValue[])?.ToList() ?? new List<FieldUserValue>(),
-				RequestID = Guid.Parse(item["RequestID"].ToString()),
 				Status = MapStatus(item["Approved"].ToString()),
 			};
+			if (item["RequestID"] != null) toReturn.RequestID = Guid.Parse(item["RequestID"].ToString());
 			toReturn.AllowedApprovers = SharepointListHelper.GetNeededApproves(clientContext, toReturn.Items);
 			return toReturn;
 		}
@@ -32,6 +32,17 @@ namespace StockRequestApprovalWeb.Models
 				case "approved": return Status.Approved;
 				case "rejected": return Status.Rejected;
 				default: return Status.UnableToParse;
+			}
+		}
+
+		public static string ToUserFriendlyString(this Status s)
+		{
+			switch (s)
+			{
+				case Status.WaitingForApproval: return "Waiting for approval";
+				case Status.Approved: return "Approved";
+				case Status.Rejected: return "Rejected";
+				default: return "Unable to parse";
 			}
 		}
 	}

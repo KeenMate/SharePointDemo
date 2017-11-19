@@ -5,6 +5,7 @@
 UploadScript.ps1
 
 api.keys.json
+passwords.json
 
 # packages
 node_modules
