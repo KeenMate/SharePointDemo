@@ -1,5 +1,4 @@
 ﻿using Microsoft.SharePoint.Client;
-using RERHostDemoWeb;
 using System;
 using System.Collections.Generic;
 using System.Linq;

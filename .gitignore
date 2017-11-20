@@ -6,6 +6,9 @@ UploadScript.ps1
 
 api.keys.json
 passwords.json
+Web.config
+Web.Debug.config
+Web.Release.config
 
 # packages
 node_modules

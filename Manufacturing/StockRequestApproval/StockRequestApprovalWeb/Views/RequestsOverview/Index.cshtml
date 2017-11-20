@@ -6,6 +6,8 @@
 
 <h2>Index</h2>
 
+@Html.Partial("RequestsOverviewPartial")
+
 <table class="table table-hover">
 	<thead>
 		<tr>
@@ -40,8 +42,8 @@
 					}
 				</th>
 				<th>
-					<button onmouseover="$('#@item.OriginalItem["ID"]').css('visibility', 'visible')" onmouseout="$('#@item.OriginalItem["ID"]').css('visibility', 'hidden')" class="btn btn-primary btn-sm">Show Items</button>
-					<div id="@item.OriginalItem["ID"]" style="position:fixed;visibility:hidden;background-color:white;border: solid black 2px">
+					<button onmouseover="$('#@item.OriginalItem["ID"]').css('display', 'inline')" onmouseout="$('#@item.OriginalItem["ID"]').css('display', 'none')" class="btn btn-primary btn-sm">Show Items</button>
+					<div id="@item.OriginalItem["ID"]" style="position:fixed;display:none;background-color:white;border: solid black 1px">
 						@foreach (var sItem in item.Items)
 						{
 							WriteLiteral(sItem.Title + " - " + sItem.Amount + " for " + sItem.TotalPrice + " €");
@@ -53,11 +55,48 @@
 				<th>
 					@if (item.Status == Status.WaitingForApproval)
 					{
-						<button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok" /></button>
-						<button class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove" /></button>
+						<button onmouseout="Hide('A@(item.OriginalItem["RequestID"])', 'A')" onclick="Show('A@(item.OriginalItem["RequestID"])', 'A')" class="btn btn-success btn-sm">
+							<span class="glyphicon glyphicon-ok"></span>
+							<div id="A@(item.OriginalItem["RequestID"])" style="display:none">
+								Approve?
+							</div>
+						</button>
+						<button onmouseout="Hide('R@(item.OriginalItem["RequestID"])', 'R')" onclick="Show('R@(item.OriginalItem["RequestID"])', 'R')" class="btn btn-danger btn-sm">
+							<span class="glyphicon glyphicon-remove"></span>
+							<div id="R@(item.OriginalItem["RequestID"])" style="display:none">
+								Reject?
+							</div>
+						</button>
 					}
 				</th>
 			</tr>
-						}
+			}
 	</tbody>
 </table>
+
+<script>
+	function Show(id, AR) {
+		if ($("#" + id).prev("span").css("display") == "none")
+		{
+			window.open("@Request.Url.Scheme://@Request.Url.Authority/Response/" + (AR == 'A' ? "Approve" : "Reject") + "?guid=" + id.slice(1), '_blank');
+		}
+		$("#" + id).css("display", "inline");
+		$("#" + id).prev("span").css("display", "none");
+		if (AR == 'A')
+			$("#" + id).parent().next("button").css("display", "none");
+		else {
+			$("#" + id).parent().css({ "padding-right": "15px", "padding-left": "15px" });
+			$("#" + id).parent().prev("button").css("display", "none");
+		}
+	}
+	function Hide(id, AR) {
+		$("#" + id).css("display", "none");
+		$("#" + id).prev("span").css("display", "inline");
+		if (AR == 'A')
+			$("#" + id).parent().next("button").css("display", "inline");
+		else {
+			$("#" + id).parent().css({ "padding-right": "10px", "padding-left": "10px" });
+			$("#" + id).parent().prev("button").css("display", "inline");
+		}
+	}
+</script>
