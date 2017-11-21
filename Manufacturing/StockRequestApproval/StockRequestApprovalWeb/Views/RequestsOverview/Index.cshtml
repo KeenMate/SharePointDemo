@@ -3,82 +3,69 @@
 @{
 	ViewBag.Title = "All Requests";
 }
+<style>
+.loader {
+  border: 10px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 10px solid #3498db;
+  width: 50px;
+  height: 50px;
+  -webkit-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
+}
 
+@@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
 <h2>Index</h2>
 
-@Html.Partial("RequestsOverviewPartial")
+<div id="dataTable">
+	@Html.Partial("ROPartial", Model)
+	<div class="loader" style="margin: 0 auto"></div>
+</div>
 
-<table class="table table-hover">
-	<thead>
-		<tr>
-			<th scope="col">Created</th>
-			<th scope="col">Created By</th>
-			<th scope="col">Status</th>
-			<th scope="col">Approved By</th>
-			<th scope="col">Data</th>
-			<th scope="col">Delivered On</th>
-			<th scope="col">Action</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var item in Model)
-		{
-			<tr>
-				<th>@item.OriginalItem["Created"]</th>
-				<th>@(((Microsoft.SharePoint.Client.FieldUserValue)item.OriginalItem["Author"]).LookupValue)</th>
-				<th>@item.Status.ToUserFriendlyString()</th>
-				<th>
-					@{string str = "";}
-					@foreach (var i in item.ApprovedBy)
-					{
-						str += i.LookupValue + ", ";
-					}
-					@{
-						if (str.LastIndexOf(", ") != -1)
-						{
-							str = str.Remove(str.LastIndexOf(", "));
-						}
-						WriteLiteral(str);
-					}
-				</th>
-				<th>
-					<button onmouseover="$('#@item.OriginalItem["ID"]').css('display', 'inline')" onmouseout="$('#@item.OriginalItem["ID"]').css('display', 'none')" class="btn btn-primary btn-sm">Show Items</button>
-					<div id="@item.OriginalItem["ID"]" style="position:fixed;display:none;background-color:white;border: solid black 1px">
-						@foreach (var sItem in item.Items)
-						{
-							WriteLiteral(sItem.Title + " - " + sItem.Amount + " for " + sItem.TotalPrice + " €");
-							WriteLiteral("<br>");
-						}
-					</div>
-				</th>
-				<th>@item.DeliveredOn</th>
-				<th>
-					@if (item.Status == Status.WaitingForApproval)
-					{
-						<button onmouseout="Hide('A@(item.OriginalItem["RequestID"])', 'A')" onclick="Show('A@(item.OriginalItem["RequestID"])', 'A')" class="btn btn-success btn-sm">
-							<span class="glyphicon glyphicon-ok"></span>
-							<div id="A@(item.OriginalItem["RequestID"])" style="display:none">
-								Approve?
-							</div>
-						</button>
-						<button onmouseout="Hide('R@(item.OriginalItem["RequestID"])', 'R')" onclick="Show('R@(item.OriginalItem["RequestID"])', 'R')" class="btn btn-danger btn-sm">
-							<span class="glyphicon glyphicon-remove"></span>
-							<div id="R@(item.OriginalItem["RequestID"])" style="display:none">
-								Reject?
-							</div>
-						</button>
-					}
-				</th>
-			</tr>
-			}
-	</tbody>
-</table>
 
+@Scripts.Render("~/bundles/jquery")
 <script>
+	var refreshing = false;
 	function Show(id, AR) {
 		if ($("#" + id).prev("span").css("display") == "none")
 		{
-			window.open("@Request.Url.Scheme://@Request.Url.Authority/Response/" + (AR == 'A' ? "Approve" : "Reject") + "?guid=" + id.slice(1), '_blank');
+			//window.open("@Request.Url.Scheme://@Request.Url.Authority/Response/" + (AR == 'A' ? "Approve" : "Reject") + "?guid=" + id.slice(1), '_blank');
+
+			var parent = $("#" + id).closest("th");
+			parent.children().each(function () { $(this).remove(); });
+			parent.append('<div class="loader" style="width: 20px; height: 20px;border: 5px solid #f3f3f3;border-top: 5px solid #3498db;margin: 0 auto;margin-left: 25px;"></div>');
+
+			$.ajax({
+				url: "Response/" + (AR == 'A' ? "Approve" : "Reject"),
+				data: "guid=" + id.slice(1),
+				type: "post"
+			}).done(function (result) {
+				console.dir(result);
+				if (result == "Authentication required")
+					window.location = "@Request.Url.Scheme://@Request.Url.Authority/Authenticate/Authenticate";
+				else if (result.includes("There is nothing more to do. Everything was saved."))
+				{
+					parent.children().each(function () { $(this).remove(); });
+					parent.append("Saved.");
+					if (!refreshing) Refresh();
+				}
+				else
+				{
+					var tr = parent.parent();
+					parent.parent().children().each(function () { $(this).remove(); });
+					tr.append(result);
+				}
+		});
+			//setTimeout(Refresh, 1500);
 		}
 		$("#" + id).css("display", "inline");
 		$("#" + id).prev("span").css("display", "none");
@@ -99,4 +86,18 @@
 			$("#" + id).parent().prev("button").css("display", "inline");
 		}
 	}
+	function Refresh()
+	{
+		refreshing = true;
+		$.ajax({
+			url: "RequestsOverview/ROPartial",
+			type: "post"}).done(function (result) {
+				if (result == "Authentication required")
+					window.location = "@Request.Url.Scheme://@Request.Url.Authority/Authenticate/Authenticate";
+				else
+					$("#dataTable").html(result);
+				refreshing = false;
+		});
+	}
+	Refresh();
 </script>

@@ -55,8 +55,33 @@ namespace StockRequestApprovalWeb.Controllers
 			}
 			return View("Close");
 		}
+		[HttpPost]
+		public object Reject(string guid)
+		{
+			if (guid != null)
+			{
+				if (Request.Cookies["FinalAccessToken"] != null)
+				{
+					try
+					{
+						return ProcessRequest("Reject", guid);
+					}
+					catch (Exception ex)
+					{
+						if (ex.Message == "Authentication required")
+							return "Authentication required";
+						else return ex.Message;
+					}
+				}
+				else
+				{
+					return "Authentication required";
+				}
+			}
+			return View("Close");
+		}
 
-		private ActionResult ProcessRequest(string action)
+		private ActionResult ProcessRequest(string action, string guid = null)
 		{
 			using (ClientContext clientContext = TokenHelper.GetClientContextWithAccessToken(ConfigurationManager.AppSettings["SharepointUrl"], Request.Cookies["FinalAccessToken"].Value))
 			{
@@ -67,12 +92,16 @@ namespace StockRequestApprovalWeb.Controllers
 					StockRequestApproveData data;
 					try
 					{
-						data = SharepointListHelper.ParseStockRequestList(clientContext, Request.QueryString["guid"]);
+						if (guid == null)
+							data = SharepointListHelper.ParseStockRequestList(clientContext, Request.QueryString["guid"]);
+						else
+							data = SharepointListHelper.ParseStockRequestList(clientContext, guid);
 					}
 					catch (Exception ex)
 					{
 						if (ex.Message == "Not Authenticated")
 						{
+							if (guid != null) throw new Exception("Authentication required");
 							if (action == "Reject")
 								Response.SetCookie(new HttpCookie("redirect", "Response/Reject?guid=" + Request.QueryString["guid"]));
 							else
@@ -161,7 +190,7 @@ namespace StockRequestApprovalWeb.Controllers
 			m.MainTemplateModelType = am.GetType();
 			string s = new TemplateService().CreateMessage(m);
 
-			
+
 		}
 
 		protected override void OnException(ExceptionContext filterContext)
