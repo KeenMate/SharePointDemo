@@ -92,7 +92,7 @@
 		],
 		"indent": [
 			"error",
-			2,
+			"tab",
 			{
 				"SwitchCase": 1
 			}
@@ -230,12 +230,12 @@
 		"no-sequences": "error",
 		"no-shadow-restricted-names": "error",
 		"no-sparse-arrays": "error",
-		"no-tabs": "error",
+		"no-tabs": "off",
 		"no-template-curly-in-string": "error",
 		"no-this-before-super": "error",
 		"no-throw-literal": "error",
 		"no-trailing-spaces": "error",
-		"no-undef": "error",
+		"no-undef": "warn",
 		"no-undef-init": "error",
 		"no-unexpected-multiline": "error",
 		"no-unmodified-loop-condition": "error",

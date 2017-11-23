@@ -1,37 +1,37 @@
 const ajaxService = {
 	defaultUrl: _spPageContextInfo.webAbsoluteUrl,
 	defaultListName: "Suppliers",
-	UrlToList(listName = defaultListName) {
+	UrlToList (listName = this.defaultListName) {
 		return `/_api/web/lists/getbytitle('${listName}')/items`;
 	},
 
-	RequestAllItems(
+	RequestAllItems (
 		url = this.defaultUrl,
 		listName = this.defaultListName
 	) {
 		return $.ajax({
 			url: url + this.UrlToList(listName),
-			method: 'GET',
+			method: "GET",
 			headers: {
-				'Accept': 'application/json; odata=verbose'
+				"Accept": "application/json; odata=verbose"
 			}
-		})
+		});
 	},
-	RequestNewDigestValue(
+	RequestNewDigestValue (
 		url = _spPageContextInfo.siteAbsoluteUrl
 	) {
 		var digest;
 		$.ajax({
-			url: url + '/_api/contextinfo',
-			method: 'POST',
-			headers: { 'Accept': 'application/json; odata=verbose' },
+			url: url + "/_api/contextinfo",
+			method: "POST",
+			headers: { "Accept": "application/json; odata=verbose" },
 			async: false
 		}).done(function (response) {
 			digest = response.d.GetContextWebInformation.FormDigestValue;
 		});
 		return digest;
 	},
-	AddNewItemToSPList(
+	AddNewItemToSPList (
 		digest,
 		item,
 		url = this.defaultUrl,
@@ -40,16 +40,16 @@ const ajaxService = {
 		return $.ajax({
 			url: url + this.UrlToList(listName),
 			data: JSON.stringify({
-				'__metadata': {
-					type: 'SP.Data.' + listName + 'ListItem'
+				"__metadata": {
+					type: "SP.Data." + listName + "ListItem"
 				},
-				'Title': item.supplierName,
-				'TaxID': item.taxId,
-				'City': item.city,
-				'ZIP_x0020_Code': item.zipCode,
-				'Street': item.street
+				"Title": item.supplierName,
+				"TaxID": item.taxId,
+				"City": item.city,
+				"ZIP_x0020_Code": item.zipCode,
+				"Street": item.street
 			}),
-			type: 'POST',
+			type: "POST",
 			headers:
 			{
 				"Accept": "application/json;odata=verbose",
@@ -57,9 +57,9 @@ const ajaxService = {
 				"X-RequestDigest": digest,
 				"X-HTTP-Method": "POST"
 			}
-		})
+		});
 	},
-	EditSupplier(
+	EditSupplier (
 		itemId,
 		payload,
 		digest,
@@ -69,16 +69,16 @@ const ajaxService = {
 		return $.ajax({
 			url: url + this.UrlToList(listName) + `(${itemId})`,
 			data: JSON.stringify(payload),
-			type: 'MERGE',
-			contentType: 'application/json; odata=verbose',
+			type: "MERGE",
+			contentType: "application/json; odata=verbose",
 			headers: {
-				'Accept': 'application/json; odata=verbose',
-				'X-RequestDigest': digest,
-				'If-Match': '*'
+				"Accept": "application/json; odata=verbose",
+				"X-RequestDigest": digest,
+				"If-Match": "*"
 			}
 		});
 	},
-	DeleteSupplier(
+	DeleteSupplier (
 		itemId,
 		digest,
 		url = this.defaultUrl,
@@ -86,32 +86,32 @@ const ajaxService = {
 	) {
 		return $.ajax({
 			url: url + this.UrlToList(listName) + `(${itemId})`,
-			type: 'DELETE',
+			type: "DELETE",
 			headers: {
-				'Accept': 'application/json; odata=verbose',
-				'X-RequestDigest': digest,
-				'If-Match': '*'
+				"Accept": "application/json; odata=verbose",
+				"X-RequestDigest": digest,
+				"If-Match": "*"
 			}
 		});
 	},
-	filterSuppliers(
+	filterSuppliers (
 		expression,
 		digestValue,
 		url = this.defaultUrl,
 		listName = this.defaultListName
 	) {
-		var buildedQuery = encodeURI("/_vti_bin/listdata.svc/" + listName + "?" +
+		var buildedQuery = "/_vti_bin/listdata.svc/" + listName + "?" +
 			"$filter=substringof('" + expression + "',SupplierName) or " +
 			"substringof('" + expression + "',Street) or " +
-			"substringof('" + expression + "',City)&$orderby=Created");
-		console.log('builded query: ' + buildedQuery);
+			"substringof('" + expression + "',City)&$orderby=Created";
+		console.log("builded query: " + buildedQuery);
 		return $.ajax({
 			url: url + buildedQuery,
-			type: 'GET',
+			type: "GET",
 			headers: {
-				'Accept': 'application/json; odata=verbose'
+				"Accept": "application/json; odata=verbose"
 			}
 		});
 	}
-}
+};
 export default ajaxService;
