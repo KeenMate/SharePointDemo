@@ -1,34 +1,18 @@
 <template>
 	<div>
 		<div class="row">
-			<v-input v-model="myModel.taxId" id="taxId" label="Demo Label for Tax ID" type="number" required></v-input>
-			<div class="input-field">
-				<label for="taxId">Tax ID</label>
-				<input type="number" id="taxId" v-model="myModel.taxId" class="validate" required/>
-			</div>
-			<div class="input-field">
-				<label for="supplierName">Supplier's Name</label>
-				<input type="text" id="supplierName" v-model="myModel.supplierName" class="validate" required/>
-			</div>
-			<div class="input-field">
-				<label for="city">City</label>
-				<input type="text" id="city" v-model="myModel.city" class="validate" required/>
-			</div>
+			<v-input v-model="myModel.taxId" id="taxId" label="Tax ID" type="number" required></v-input>
+			<v-input v-model="myModel.supplierName" type="text" label="Supplier's name" id="supplierName" required></v-input>
+			<v-input v-model="myModel.city" type="text" label="City" id="city" required></v-input>
 		</div>
 		<div class="row">
-			<div class="input-field col s6">
-				<label for="street">Street</label>
-				<input type="text" id="street" v-model="myModel.street" class="validate" required/>
-			</div>
-			<div class="input-field col s6">
-				<label for="zipCode">Zip Code</label>
-				<input type="number" id="zipCode" v-model="myModel.zipCode" class="validate" required/>
-			</div>
+			<v-input v-model="myModel.street" type="text" class="col s6" id="street" label="Street" required></v-input>
+			<v-input type="number" v-model="myModel.zipCode" class="col s6" id="zipCode" label="Zip Code" required></v-input>
 		</div>
-		<button class="btn waves-effect waves-light green" v-on:click.prevent="SubmitForm()">Add new Supplier
+		<button class="btn waves-effect waves-light green btn-action" v-on:click.prevent="SubmitForm()">Add new Supplier
 			<i class="material-icons right">add</i>
 		</button>
-		<button class="right btn waves-effect waves-light red" @click="$router.go(-1)">Cancel</button>
+		<button class="right btn waves-effect waves-light red btn-action" @click="$router.go(-1)">Cancel</button>
 	</div>
 </template>
 
@@ -44,7 +28,11 @@ export default {
 	},
 	data() {
 		return {
-			myModel: {}
+			myModel: {
+				supplierName: "",
+				city: "",
+				street: ""
+			}
 		}
 	},
 	methods: {
@@ -80,3 +68,9 @@ export default {
 	}
 }
 </script>
+
+<style scoped>
+	.btn-action {
+		margin-top: 10px;
+	}
+</style>

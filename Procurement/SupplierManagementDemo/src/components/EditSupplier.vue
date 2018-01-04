@@ -18,7 +18,7 @@
 					<label class="active">Street (original: {{supplierCopy.Address.Street}})</label>
 					<input type="text" v-model="mySupplier.Address.Street" />
 				</div>
-				<a class="waves-effect waves-light btn green modal-action" type="button" @click="onEditSubmit()">Edit mySupplier</a>
+				<a class="waves-effect waves-light btn green modal-action" type="button" @click="onEditSubmit()">Save supplier</a>
 				<a class="waves-effect waves-light right btn red modal-close" type="button">Cancel</a>
 			</div>
 		</div>

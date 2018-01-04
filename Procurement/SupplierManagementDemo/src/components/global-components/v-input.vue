@@ -2,6 +2,7 @@
 	<div class="input-field">
 		<label :for="localId">{{localLabel}}</label>
 		<input
+			:name="name"
 			:type="localType"
 			:id="localId"
 			:value="value"
@@ -19,18 +20,19 @@ export default {
 		"value", // Used for v-model attribute
 		"id",
 		"type",
+		"name",
 		"required"
 	],
 	computed: {
 		// Symbolises Method for setting up default values
 		localId() {
-			return this.id != "" ? this.id : "_" + Math.random().toString(39).substring(2, 9)
+			return this.id != "" ? this.id : "_" + Math.random().toString(39).substring(2, 9);
 		},
 		localLabel() {
 			return this.label != "" ? this.label : "Label text"
 		},
 		localType() {
-			return this.type != "" ? this.type : typeof (this.value) != undefined ? typeof(this.value).toString() : "text"
+			return this.type != "" ? this.type : typeof (this.value) != undefined ? typeof(this.value).toString() : "text";
 		},
 		localRequired() {
 			return this.required === "" || this.required === "required" ? this.required : null;
@@ -44,6 +46,9 @@ export default {
 		onKeyup(event) {
 			this.$emit("keyup", event);
 		}
+	},
+	mounted () {
+		console.log(typeof(this.value));
 	}
 }
 </script>
