@@ -244,6 +244,7 @@
     <Compile Include="Models\EmailMessage.cs" />
     <Compile Include="Models\MailTemplatesKeys.cs" />
     <Compile Include="Models\StockRequestApproveData.cs" />
+    <Compile Include="Models\StockRequestApproveDataJSON.cs" />
     <Compile Include="Models\StockRequestApproveDataMapper.cs" />
     <Compile Include="Models\StockRequestItem.cs" />
     <Compile Include="Models\StockRequestModel.cs" />
@@ -276,6 +277,7 @@
     <Content Include="api.keys.json" />
     <Content Include="CamlQueryTemplates.json" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\build.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -313,7 +315,6 @@
     <Content Include="Templates\Header.cshtml" />
     <Content Include="Views\Report\Index.cshtml" />
     <Content Include="Views\RequestsOverview\Index.cshtml" />
-    <Content Include="Views\RequestsOverview\ROPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

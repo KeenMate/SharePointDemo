@@ -38,6 +38,31 @@ namespace StockRequestApprovalWeb.Controllers
 			}
 			return View("Close");
 		}
+		[HttpPost]
+		public object Approve(string guid)
+		{
+			if (guid != null)
+			{
+				if (Request.Cookies["FinalAccessToken"] != null)
+				{
+					try
+					{
+						return ProcessRequest("Approve", guid);
+					}
+					catch (Exception ex)
+					{
+						if (ex.Message == "Authentication required")
+							return "Authentication required";
+						else return ex.Message;
+					}
+				}
+				else
+				{
+					return "Authentication required";
+				}
+			}
+			return View("Close");
+		}
 
 		public ActionResult Reject()
 		{
@@ -153,9 +178,10 @@ namespace StockRequestApprovalWeb.Controllers
 
 			StockRequestModel model = StockRequestMapper.MapStockRequestModel(data.OriginalItem);
 
-			if (data.ApprovedBy.Count == data.AllowedApprovers.Count)
+
+			if (!data.ApprovedBy.Select(x => x.LookupId).Except(data.AllowedApprovers.Select(x => x.LookupId)).Any())
 			{
-				if (!data.ApprovedBy.Select(x => x.LookupId).Except(data.AllowedApprovers.Select(x => x.LookupId)).Any())
+				if (data.ApprovedBy.Count == data.AllowedApprovers.Count)
 				{
 					ListItemCollection stockItemList = SharepointListHelper.GetListItems(clientContext, ConfigurationManager.AppSettings["StockItemsListName"]);
 					clientContext.ExecuteQuery();
@@ -166,10 +192,10 @@ namespace StockRequestApprovalWeb.Controllers
 					SharepointListHelper.WithdrawItems(clientContext, model.Items, stockList);
 					data.UpdateItem("Approved", "Approved");
 				}
-				else
-				{
-					throw new Exception("An unautorized person approved this request. Please contact your administrator.");
-				}
+			}
+			else
+			{
+				throw new Exception("An unautorized person approved this request. Please contact your administrator.");
 			}
 
 			data.UpdateItem("ApprovedBy", data.ApprovedBy.ToArray());

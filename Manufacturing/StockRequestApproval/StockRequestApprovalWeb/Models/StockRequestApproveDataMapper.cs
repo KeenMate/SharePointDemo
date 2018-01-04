@@ -19,7 +19,17 @@ namespace StockRequestApprovalWeb.Models
 				ApprovedBy = (item["ApprovedBy"] as FieldUserValue[])?.ToList() ?? new List<FieldUserValue>(),
 				Status = MapStatus(item["Approved"].ToString()),
 			};
-			if (item["RequestID"] != null) toReturn.RequestID = Guid.Parse(item["RequestID"].ToString());
+			if (item["RequestID"] != null)
+			{
+				try
+				{
+					toReturn.RequestID = Guid.Parse(item["RequestID"].ToString());
+				}
+				catch
+				{
+					toReturn.RequestID = Guid.Empty;
+				}
+			}
 			toReturn.AllowedApprovers = SharepointListHelper.GetNeededApproves(clientContext, toReturn.Items);
 			return toReturn;
 		}

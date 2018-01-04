@@ -58,11 +58,12 @@ namespace StockRequestRERWeb.Services
 
 					JsonLoader loader = new JsonLoader();
 					NotificationManager m = new NotificationManager(ConfigurationHelper.GetApiKey(ApiKeys.SendGridApiKey), ConfigurationManager.AppSettings["templateDefsPath.json"]);
+					List<string> alreadySend = new List<string>();
 					foreach (string s in neededMaterials)
 					{
 						foreach (ListItem item in collListItem)
 						{
-							if (item.FieldValues["Title"].ToString() == s)
+							if (item.FieldValues["Title"].ToString() == s && !alreadySend.Contains(((FieldUserValue)item.FieldValues["Value"]).Email))
 							{
 								ApprovalRequestModel aModel = new ApprovalRequestModel();
 								aModel.ApproverName = ((FieldUserValue)item.FieldValues["Value"]).LookupValue;
@@ -71,6 +72,7 @@ namespace StockRequestRERWeb.Services
 								aModel.RequesterName = clientContext.Web.CurrentUser.Title;
 								aModel.RequesterEmail = clientContext.Web.CurrentUser.Email;
 								m.SendApprovalRequest(aModel, ((FieldUserValue)item.FieldValues["Value"]).Email);
+								alreadySend.Add(((FieldUserValue)item.FieldValues["Value"]).Email);
 								break;
 							}
 						}
