@@ -262,32 +262,19 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AuthenticationTemplate.xml" />
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\KeenMate45x40.png" />
+    <Content Include="Content\materialize-min.css" />
     <Content Include="favicon.ico" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="api.keys.json" />
     <Content Include="CamlQueryTemplates.json" />
-    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\build.js" />
-    <Content Include="Scripts\jquery-1.10.2.js" />
-    <Content Include="Scripts\jquery-1.10.2.min.js" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Scripts\modernizr-2.6.2.js" />
-    <Content Include="Scripts\respond.js" />
-    <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\jQuery.js" />
+    <Content Include="Scripts\materialize.min.js" />
     <Content Include="Scripts\spcontext.js" />
     <Content Include="templateDefs.json" />
     <Content Include="Web.config">
@@ -302,8 +289,6 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Authenticate\Index.cshtml" />
@@ -321,25 +306,25 @@
     <Folder Include="Views\Response\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Reports\XtraReport1.resx">
       <DependentUpon>XtraReport1.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="fonts\roboto\Roboto-Bold.woff" />
+    <Content Include="fonts\roboto\Roboto-Bold.woff2" />
+    <Content Include="fonts\roboto\Roboto-Light.woff" />
+    <Content Include="fonts\roboto\Roboto-Light.woff2" />
+    <Content Include="fonts\roboto\Roboto-Medium.woff" />
+    <Content Include="fonts\roboto\Roboto-Medium.woff2" />
+    <Content Include="fonts\roboto\Roboto-Regular.woff" />
+    <Content Include="fonts\roboto\Roboto-Regular.woff2" />
+    <Content Include="fonts\roboto\Roboto-Thin.woff" />
+    <Content Include="fonts\roboto\Roboto-Thin.woff2" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

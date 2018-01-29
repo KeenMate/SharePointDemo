@@ -16,6 +16,6 @@ namespace StockRequestApprovalWeb.Models
 		public List<string> AllowedApprovers { get; set; }
 		public Guid RequestID { get; set; }
 		public string DeliveredOn { get; set; }
-		public object VueData { get; set; } = new object();
+		public string ModifiedBy { get; set; } // if rejected, last modifier should be rejector
 	}
 }

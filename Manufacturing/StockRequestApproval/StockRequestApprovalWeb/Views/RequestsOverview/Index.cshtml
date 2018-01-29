@@ -5,8 +5,8 @@
 
 <div id="dataTable">
 	<div id="app"></div>
-	@Scripts.Render("~/Scripts/build.js")
 </div>
 
-
-@Scripts.Render("~/bundles/jquery")
+@section scripts {
+	@Scripts.Render("~/Scripts/build.js")
+}

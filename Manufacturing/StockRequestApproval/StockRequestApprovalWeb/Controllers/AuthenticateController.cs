@@ -15,12 +15,7 @@ namespace StockRequestApprovalWeb.Controllers
 	public class AuthenticateController : Controller
 	{
 		// GET: Authenticate
-		public ActionResult Index()
-		{
-			return View();
-		}
-
-		public void Authenticate()
+		public void Index()
 		{
 			string url = TokenHelper.GetAuthorizationUrl(ConfigurationManager.AppSettings["SharepointUrl"], "Web.Manage", ConfigurationManager.AppSettings["RedirectUrl"]);
 			Response.Redirect(url);
