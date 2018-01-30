@@ -52,7 +52,7 @@ namespace StockRequestApprovalWeb.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetData(int count = 15, string position = "", bool prev = false)
+		public ActionResult GetData(int count = 15, string position = "")
 		{
 			List<StockRequestApproveData> model = new List<StockRequestApproveData>();
 			List<StockRequestApproveDataJSON> jlist = new List<StockRequestApproveDataJSON>();
@@ -83,7 +83,7 @@ namespace StockRequestApprovalWeb.Controllers
 				if (position != "")
 				{
 					ListItemCollectionPosition pos = new ListItemCollectionPosition();
-					pos.PagingInfo = (prev ? "PagePrev=True&" : "") + position.Replace("_AMP_", "&").Replace(" ", "%20").Replace(":", "%3a");
+					pos.PagingInfo = position.Replace("_AMP_", "&").Replace(" ", "%20").Replace(":", "%3a");
 					query.ListItemCollectionPosition = pos;
 				}
 
