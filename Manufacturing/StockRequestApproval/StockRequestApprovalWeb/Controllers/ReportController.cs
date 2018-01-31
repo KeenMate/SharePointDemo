@@ -33,7 +33,7 @@ namespace StockRequestApprovalWeb.Controllers
 					if (ex.Message.Contains("401"))
 					{
 						Response.SetCookie(new HttpCookie("redirect", "Report/GenerateReport"));
-						return RedirectToAction("Authenticate", "Authenticate");
+						return RedirectToAction("Index", "Authenticate");
 					}
 					else throw;
 				}
@@ -59,14 +59,15 @@ namespace StockRequestApprovalWeb.Controllers
 				lst.Add(model);
 				XtraReport1 rep = new XtraReport1();
 				rep.DataSource = lst;
-				rep.ExportToPdf(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\test.pdf");
+				string path = Server.MapPath($"~/Temp/StockReport{DateTime.Now.ToString("YYYYMMDD-hhmmss")}.pdf");
+				rep.ExportToPdf(path);
 
-				return View();
+				return File(path, "application/pdf", Server.UrlEncode(path));
 			}
 			else
 			{
 				Response.SetCookie(new HttpCookie("redirect", "Report/GenerateReport"));
-				return RedirectToAction("Authenticate", "Authenticate");
+				return RedirectToAction("Index", "Authenticate");
 			}
 		}
 	}
