@@ -68,82 +68,90 @@ namespace StockRequestApprovalWeb.Controllers
 		[HttpPost]
 		public ActionResult GetData(int count = 15, string position = "", bool onlyUnresolved = false)
 		{
-			logger.Trace($"GetData called with parameters count: {count}, position: {position}, onlyUnresolved: {onlyUnresolved}");
-			List<StockRequestApproveData> model = new List<StockRequestApproveData>();
-			List<StockRequestApproveDataJSON> jlist = new List<StockRequestApproveDataJSON>();
-
-			if (Request.Cookies["FinalAccessToken"] != null)
+			try
 			{
-				logger.Trace("Getting clientContext with access token");
-				ClientContext clientContext = TokenHelper.GetClientContextWithAccessToken(ConfigurationManager.AppSettings["SharepointUrl"], Request.Cookies["FinalAccessToken"].Value);
-				try
+				logger.Trace($"GetData called with parameters count: {count}, position: {position}, onlyUnresolved: {onlyUnresolved}");
+				List<StockRequestApproveData> model = new List<StockRequestApproveData>();
+				List<StockRequestApproveDataJSON> jlist = new List<StockRequestApproveDataJSON>();
+
+				if (Request.Cookies["FinalAccessToken"] != null)
 				{
-					clientContext.Load(clientContext.Web.CurrentUser);
-					clientContext.ExecuteQuery();
-				}
-				catch (Exception ex)
-				{
-					if (ex.Message.Contains("401"))
+					logger.Trace("Getting clientContext with access token");
+					ClientContext clientContext = TokenHelper.GetClientContextWithAccessToken(ConfigurationManager.AppSettings["SharepointUrl"], Request.Cookies["FinalAccessToken"].Value);
+					try
 					{
-						logger.Info("SP returned 401, setting cookie to redirect to RequestsOverview and returning status code Unauthorized");
-						Response.SetCookie(new HttpCookie("redirect", "RequestsOverview"));
-						return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+						clientContext.Load(clientContext.Web.CurrentUser);
+						clientContext.ExecuteQuery();
 					}
-					else
+					catch (Exception ex)
 					{
-						logger.Error(ex, "Unexpected exception occured.");
-						throw;
+						if (ex.Message.Contains("401"))
+						{
+							logger.Info("SP returned 401, setting cookie to redirect to RequestsOverview and returning status code Unauthorized");
+							Response.SetCookie(new HttpCookie("redirect", "RequestsOverview"));
+							return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+						}
+						else
+						{
+							logger.Error(ex, "Unexpected exception occured.");
+							throw;
+						}
+					}
+					logger.Debug("Loading stock request list.");
+					CSOMOperation op = new CSOMOperation(clientContext);
+					op.LoadList("Stock Request");
+
+					CamlQuery query = new CamlQuery();
+
+					query.ViewXml =
+						onlyUnresolved ?
+						$"<View><Query><Where><Eq><FieldRef Name='" + ConfigurationManager.AppSettings["StatusFieldName"] + $"'/><Value Type='Text'>Waiting for approval</Value></Eq></Where><OrderBy><FieldRef Name='Created' Ascending='False' /></OrderBy></Query><RowLimit>{count}</RowLimit></View>" :
+						$"<View><Query><OrderBy><FieldRef Name='Created' Ascending='False' /></OrderBy></Query><RowLimit>{count}</RowLimit></View>";
+					logger.Debug("Caml query set to: " + query.ViewXml);
+					if (position != "")
+					{
+						ListItemCollectionPosition pos = new ListItemCollectionPosition();
+						pos.PagingInfo = position.Replace("_AMP_", "&").Replace(" ", "%20").Replace(":", "%3a");
+						query.ListItemCollectionPosition = pos;
+						logger.Trace("Setting query position to " + pos.PagingInfo);
+					}
+
+
+					ListItemCollection col = op.GetItems(query);
+					position = col.ListItemCollectionPosition?.PagingInfo;
+					logger.Debug("Data fetched. Converting to JSON.");
+					foreach (var item in col)
+					{
+						StockRequestApproveData d = StockRequestApproveDataMapper.MapStockRequestModel(clientContext, item);
+						StockRequestApproveDataJSON jmodel = new StockRequestApproveDataJSON();
+						jmodel.ID = int.Parse(item["ID"].ToString());
+						jmodel.Created = item["Created"].ToString();
+						jmodel.CreatedBy = ((FieldUserValue)item["Author"]).LookupValue;
+						jmodel.AllowedApprovers = d.AllowedApprovers.ConvertAll(x => x.LookupValue);
+						jmodel.ApprovedBy = d.ApprovedBy.ConvertAll(x => x.LookupValue);
+						jmodel.DeliveredOn = d.DeliveredOn.ToString();
+						jmodel.Items = d.Items;
+						jmodel.RequestID = d.RequestID;
+						jmodel.ModifiedBy = ((FieldUserValue)item["Editor"]).LookupValue;
+						if (d.RequestID == Guid.Empty) jmodel.Status = "Invalid GUID";
+						else jmodel.Status = d.Status.ToUserFriendlyString();
+						jlist.Add(jmodel);
 					}
 				}
-				logger.Debug("Loading stock request list.");
-				CSOMOperation op = new CSOMOperation(clientContext);
-				op.LoadList("Stock Request");
-
-				CamlQuery query = new CamlQuery();
-
-				query.ViewXml =
-					onlyUnresolved ?
-					$"<View><Query><Where><Eq><FieldRef Name='" + ConfigurationManager.AppSettings["StatusFieldName"] + "'/><Value Type='Text'>Waiting for approval</Value></Eq></Where><OrderBy><FieldRef Name='Created' Ascending='False' /></OrderBy></Query><RowLimit>{count}</RowLimit></View>" :
-					$"<View><Query><OrderBy><FieldRef Name='Created' Ascending='False' /></OrderBy></Query><RowLimit>{count}</RowLimit></View>";
-				logger.Debug("Caml query set to: " + query.ViewXml);
-				if (position != "")
+				else
 				{
-					ListItemCollectionPosition pos = new ListItemCollectionPosition();
-					pos.PagingInfo = position.Replace("_AMP_", "&").Replace(" ", "%20").Replace(":", "%3a");
-					query.ListItemCollectionPosition = pos;
-					logger.Trace("Setting query position to " + pos.PagingInfo);
+					logger.Info("FinalAccessToken is null, setting cookie to redirect to RequestsOverview and returning status code Unauthorized");
+					Response.SetCookie(new HttpCookie("redirect", "RequestsOverview"));
+					return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
 				}
-
-
-				ListItemCollection col = op.GetItems(query);
-				position = col.ListItemCollectionPosition?.PagingInfo;
-				logger.Debug("Data fetched. Converting to JSON.");
-				foreach (var item in col)
-				{
-					StockRequestApproveData d = StockRequestApproveDataMapper.MapStockRequestModel(clientContext, item);
-					StockRequestApproveDataJSON jmodel = new StockRequestApproveDataJSON();
-					jmodel.ID = int.Parse(item["ID"].ToString());
-					jmodel.Created = item["Created"].ToString();
-					jmodel.CreatedBy = ((FieldUserValue)item["Author"]).LookupValue;
-					jmodel.AllowedApprovers = d.AllowedApprovers.ConvertAll(x => x.LookupValue);
-					jmodel.ApprovedBy = d.ApprovedBy.ConvertAll(x => x.LookupValue);
-					jmodel.DeliveredOn = d.DeliveredOn.ToString();
-					jmodel.Items = d.Items;
-					jmodel.RequestID = d.RequestID;
-					jmodel.ModifiedBy = ((FieldUserValue)item["Editor"]).LookupValue;
-					if (d.RequestID == Guid.Empty) jmodel.Status = "Invalid GUID";
-					else jmodel.Status = d.Status.ToUserFriendlyString();
-					jlist.Add(jmodel);
-				}
+				logger.Trace("Returning JSON.");
+				return new JsonResult() { Data = new { Data = jlist, Pos = position } };
 			}
-			else
+			catch (Exception ex)
 			{
-				logger.Info("FinalAccessToken is null, setting cookie to redirect to RequestsOverview and returning status code Unauthorized");
-				Response.SetCookie(new HttpCookie("redirect", "RequestsOverview"));
-				return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+				logger.Fatal(ex, "Fatal error during GetData");
+				return new HttpStatusCodeResult(HttpStatusCode.InternalServerError);
 			}
-			logger.Trace("Returning JSON.");
-			return new JsonResult() { Data = new { Data = jlist, Pos = position } };
 		}
 
 		[HttpPost]
