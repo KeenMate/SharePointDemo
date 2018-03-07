@@ -1,0 +1,27 @@
+﻿@model string
+@{
+	ViewBag.Title = "Index";
+}
+
+<div id="modal1" class="modal">
+	<div class="modal-content">
+		<h4>Error occured</h4>
+		<p>@Html.Raw(Model)</p>
+	</div>
+	<div class="modal-footer">
+		<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">OK</a>
+	</div>
+</div>
+
+@section Scripts{
+	<script>
+		$(document).ready(function () {
+			// the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
+			$('.modal').modal();
+			@if (Model != null )
+			{
+				WriteLiteral("$('#modal1').modal('open');");
+			}
+		});
+	</script>
+}

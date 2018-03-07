@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" dslVersion="1.0.0.0" Id="73c18b4f-3683-491f-bf85-f28f209e2fda" solutionId="73c18b4f-3683-491f-bf85-f28f209e2fda" resetWebServer="false" sharePointProductVersion="15.0" name="StockRequestRER" xmlns="http://schemas.microsoft.com/VisualStudio/2008/SharePointTools/PackageModel">
+  <features>
+    <featureReference itemId="1e212e38-b910-4e98-85e1-f66c599c6796" />
+  </features>
+</package>

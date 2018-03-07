@@ -9,6 +9,9 @@ passwords.json
 Web.config
 Web.Debug.config
 Web.Release.config
+Web.config.bak
+AppManifest.xml
+Manufacturing/StockRequestApproval/StockRequestApprovalWeb/Temp/*
 
 # packages
 node_modules

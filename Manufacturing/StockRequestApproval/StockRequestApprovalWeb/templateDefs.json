@@ -1,0 +1,26 @@
+﻿[
+	{
+		"Name": "ApprovalConfirmationForUser",
+		"Message": {
+			"From": "confirmation@keenmate.com",
+			"DisplayName": "Request Confirmation",
+			"Subject": "Your request has been resolved."
+		},
+		"TemplateModel": {
+			"TemplatePaths": [ "Templates\\Head.cshtml", "Templates\\Header.cshtml", "Templates\\Footer.cshtml" ],
+			"MainTemplatePath": "Templates\\ApprovalConfirmation.cshtml"
+		}
+	},
+	{
+		"Name": "ConfirmationRequestForUser",
+		"Message": {
+			"From": "confirmation@keenmate.com",
+			"DisplayName": "Stock Request",
+			"Subject": "An item has been successfully registered."
+		},
+		"TemplateModel": {
+			"TemplatePaths": [ "Templates\\Head.cshtml", "Templates\\Header.cshtml", "Templates\\Footer.cshtml" ],
+			"MainTemplatePath": "Templates\\StockRequest.cshtml"
+		}
+	}
+]

@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewBag.Title - My ASP.NET Application</title>
+	@Styles.Render("~/Content/Site.css")
+	@Styles.Render("~/Content/materialize-min.css")
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+	<nav class="top-nav" style="margin-top: -56px">
+		<div class="nav-wrapper">
+			@Html.ActionLink("Stock Management", "Index", "RequestsOverview", new { area = "" }, new { @class = "brand-logo" })			
+		</div>
+	</nav>
+	<div class="container">
+		@RenderBody()
+		<hr />
+		<footer>
+			<p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+		</footer>
+	</div>
+
+	@Scripts.Render("~/Scripts/jQuery.js")
+	@Scripts.Render("~/Scripts/materialize.min.js")
+	@Scripts.Render("~/bundles/spcontext")
+	@RenderSection("scripts", required: false)
+</body>
+</html>
