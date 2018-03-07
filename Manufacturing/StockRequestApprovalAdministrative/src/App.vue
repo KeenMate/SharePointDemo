@@ -4,6 +4,14 @@
     <h3 v-if="currentUser != ''">Welcome {{ currentUser }}</h3> 
     <loader v-else-if="!isLoading" size="small" centered="true"></loader>    
     <div class="row">
+      <div class="col s12">
+        <p>
+          <input v-model="onlyUnresolved" :disabled="isLoading" type="checkbox" class="filled-in" id="filled-in-box" />
+          <label for="filled-in-box">Show only unresolved orders.</label>
+        </p>
+      </div>
+    </div>
+    <div class="row">
       <div class="col s1">
         <page-prev @prevclick="PrevPage()" :selected="pageSelected" :all-disable="!canClick"></page-prev>
       </div>
@@ -95,7 +103,8 @@ export default {
       modalError: "something",
       currentItem: null,
       totalItems: null,
-      itemsPerPage: 4,
+      onlyUnresolved: false,
+      itemsPerPage: 5,
       pageSelected: 1,
       paginationString: "",
       num: require("numeral")
@@ -109,7 +118,7 @@ export default {
     NextPage: function() {
       this.pageSelected++;
       var last = this.data[this.data.length - 1];
-      this.GetPageOnlyData(false);
+      this.GetPageOnlyData();
     },
     PrevPage: function() {
       this.pageSelected--;
@@ -122,18 +131,7 @@ export default {
         ) +
         "&p_ID=" +
         this.data[0].ID;
-      this.GetPageOnlyData(true);
-    },
-    Page: function(num) {
-      this.pageSelected = num;
-    },
-    testModal: function() {
-      this.PrepareModal("Test", "Some text", [{ text: "OK" }], null);
-      var v = this.$refs.modal1.ShowModal();
-      console.log(v);
-      v.then(function(p) {
-        console.log(p);
-      });
+      this.GetPageOnlyData();
     },
     PostProcess: function(data, approve) {
       if (approve === undefined) approve = true;
@@ -210,7 +208,10 @@ export default {
         "count=" +
           this.itemsPerPage +
           "&position=" +
-          self.paginationString.replace(/&/g, "_AMP_")
+          self.paginationString.replace(/&/g, "_AMP_") +
+          (this.onlyUnresolved
+            ? "&onlyUnresolved=true"
+            : "&onlyUnresolved=false")
       );
       console.dir(self.paginationString);
       getDataResult
@@ -303,6 +304,22 @@ export default {
       this.modalButtons = buttons;
       this.modalTable = table;
       this.modalError = error;
+    }
+  },
+  watch: {
+    onlyUnresolved: function() {
+      console.dir(this.onlyUnresolved);
+      this.pageSelected = 1;
+      this.paginationString = "";
+      var self = this;
+      var totalItems = provider.GetData(
+        "/RequestsOverview/GetItemCount",
+        "onlyUnresolved=" + self.onlyUnresolved
+      );
+      totalItems.done(function(count) {
+        self.totalItems = count;
+        self.GetPageOnlyData();
+      });
     }
   }
 };

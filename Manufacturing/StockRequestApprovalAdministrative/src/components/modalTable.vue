@@ -11,7 +11,7 @@
           <tr v-for="(row, index) in rows" :key="index">
               <td>{{ row.Title }}</td>
               <td>{{ row.Amount }}</td>
-              <td>{{ row.TotalPrice }}</td>
+              <td>{{ row.TotalPrice }} €</td>
           </tr>
       </tbody>
   </table>
@@ -20,10 +20,7 @@
 <script>
 export default {
     name: "modalTable",
-    props: ["rows"],
-    mounted: function(){
-        console.dir(this.rows);
-    }
+    props: ["rows"]
 }
 </script>
 
