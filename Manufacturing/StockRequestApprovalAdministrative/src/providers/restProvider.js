@@ -4,7 +4,7 @@ export default {
     GetData: function (url, body) {
         console.dir("body to send" + body);
         var def = $.Deferred()
-        url = url || "/RequestsOverview/GetData"
+        url = url || "RequestsOverview/GetData"
         $.ajax({
             url: url,
             method: "post",

@@ -157,7 +157,7 @@ export default {
       console.dir(button);
       if (button == "Approve") {
         var res = provider.GetData(
-          "/Response/Approve",
+          "Response/Approve",
           "guid=" + this.currentItem.RequestID
         );
         this.currentItem.Status = "Processing...";
@@ -167,7 +167,7 @@ export default {
         });
       } else if (button == "Reject") {
         var res = provider.GetData(
-          "/Response/Reject",
+          "Response/Reject",
           "guid=" + this.currentItem.RequestID
         );
         this.currentItem.Status = "Processing...";
@@ -243,10 +243,10 @@ export default {
       var self = this;
 
       var getDataResult = provider.GetData(null, "count=" + this.itemsPerPage);
-      var userResult = provider.GetData("/RequestsOverview/GetCurrentUser");
-      var totalItems = provider.GetData("/RequestsOverview/GetItemCount");
+      var userResult = provider.GetData("RequestsOverview/GetCurrentUser");
+      var totalItems = provider.GetData("RequestsOverview/GetItemCount");
       var isAuthenticated = provider.GetData(
-        "/RequestsOverview/IsAuthenticated"
+        "RequestsOverview/IsAuthenticated"
       );
 
       isAuthenticated
@@ -282,7 +282,7 @@ export default {
             });
         })
         .fail(function(response) {
-          if (response.status == 401) window.location.replace("/Authenticate");
+          if (response.status == 401) window.location.replace("Authenticate");
           else {
             self.isLoading = false;
             self.canClick = false;
@@ -313,7 +313,7 @@ export default {
       this.paginationString = "";
       var self = this;
       var totalItems = provider.GetData(
-        "/RequestsOverview/GetItemCount",
+        "RequestsOverview/GetItemCount",
         "onlyUnresolved=" + self.onlyUnresolved
       );
       totalItems.done(function(count) {
