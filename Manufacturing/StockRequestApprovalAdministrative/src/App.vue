@@ -1,6 +1,6 @@
 <template>
   <div id="app">  
-    <a class="waves-effect waves-light btn" href="/Report/GenerateReport">Get Stock Report</a>
+    <a class="waves-effect waves-light btn" href="Report/GenerateReport">Get Stock Report</a>
     <h3 v-if="currentUser != ''">Welcome {{ currentUser }}</h3> 
     <loader v-else-if="!isLoading" size="small" centered="true"></loader>    
     <div class="row">
