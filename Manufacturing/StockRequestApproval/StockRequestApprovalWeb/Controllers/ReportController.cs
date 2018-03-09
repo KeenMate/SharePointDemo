@@ -62,7 +62,7 @@ namespace StockRequestApprovalWeb.Controllers
 					StockRequestItem i = new StockRequestItem();
 					i.Amount = int.Parse(item[ConfigurationManager.AppSettings["AmountFieldName"]].ToString());
 					i.MaterialType = stockItems.FirstOrDefault(x => x[ConfigurationManager.AppSettings["TitleFieldName"]].ToString() == ((FieldLookupValue)item[ConfigurationManager.AppSettings["ItemFieldName"]]).LookupValue)[ConfigurationManager.AppSettings["MaterialTypeFieldName"]].ToString();
-					i.Title = ((FieldLookupValue)item[ConfigurationManager.AppSettings["TitleFieldName"]]).LookupValue;
+					i.Title = ((FieldLookupValue)item[ConfigurationManager.AppSettings["ItemFieldName"]]).LookupValue;
 					i.TotalPrice = int.Parse(item[ConfigurationManager.AppSettings["PriceFieldName"]].ToString());
 					items.Add(i);
 				}
