@@ -6,7 +6,7 @@
     <div class="row">
       <div class="col s12">
         <p>
-          <input v-model="onlyUnresolved" :disabled="isLoading" type="checkbox" class="filled-in" id="filled-in-box" />
+          <input v-model="onlyUnresolved" :disabled="isLoading || itemProcessing" type="checkbox" class="filled-in" id="filled-in-box" />
           <label for="filled-in-box">Show only unresolved orders.</label>
         </p>
       </div>
@@ -34,7 +34,7 @@
             </tr>
           </thead>
         	<tbody>
-          	<row @modalapprove="ModalApprove" @modalreject="ModalReject" v-for="item in data" :user="currentUser" :key="item.Created" :item="item"></row>
+          	<row @modalapprove="ModalApprove" @modalreject="ModalReject" v-for="item in data" :user="currentUser" :processing="itemProcessing" :key="item.Created" :item="item"></row>
         	</tbody>
         </table>
         <loader v-else size="big" centered="true"></loader>
@@ -102,6 +102,7 @@ export default {
       modalTable: false,
       modalError: "something",
       currentItem: null,
+      itemProcessing: false,
       totalItems: null,
       onlyUnresolved: false,
       itemsPerPage: 5,
@@ -151,11 +152,13 @@ export default {
         );
         this.$refs.modal1.ShowModal();
       }
+      this.itemProcessing = false;
     },
     ModalClick: function(button) {
       var self = this;
       console.dir(button);
       if (button == "Approve") {
+        this.itemProcessing = true;
         var res = provider.GetData(
           "Response/Approve",
           "guid=" + this.currentItem.RequestID
@@ -166,6 +169,7 @@ export default {
           self.PostProcess(data);
         });
       } else if (button == "Reject") {
+        this.itemProcessing = true;
         var res = provider.GetData(
           "Response/Reject",
           "guid=" + this.currentItem.RequestID

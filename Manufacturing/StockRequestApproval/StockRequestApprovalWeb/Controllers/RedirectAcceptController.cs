@@ -41,6 +41,7 @@ namespace StockRequestApprovalWeb.Controllers
 					error += s + ": " + Request.QueryString[s] + "<br>";
 				}
 				error = error.TrimEnd("<br>".ToCharArray());
+				logger.Debug(error);
 				return View(model: error);
 			}
 

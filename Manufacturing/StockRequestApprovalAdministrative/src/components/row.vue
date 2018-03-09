@@ -45,8 +45,8 @@
                     <tr v-if="item.Status === 'Waiting for approval' && item.AllowedApprovers.contains(user) && !item.ApprovedBy.contains(user)">
                         <th>Action</th>
                         <td>
-                            <a @click.prevent="$emit('modalapprove', item)" class="waves-effect waves-light btn modal-trigger" href="#modal1"><i class="material-icons">done</i></a>
-                            <a @click.prevent="$emit('modalreject', item)" class="waves-effect waves-light btn modal-trigger" href="#modal1"><i class="material-icons">remove</i></a>
+                            <a @click.prevent="EmitApprove()" :class="'waves-effect waves-light btn modal-trigger' + (processing ? ' disabled' : '')" href="#modal1"><i class="material-icons">done</i></a>
+                            <a @click.prevent="EmitReject()" :class="'waves-effect waves-light btn modal-trigger' + (processing ? ' disabled' : '')" href="#modal1"><i class="material-icons">remove</i></a>
                         </td>
                     </tr>
                     <tr v-if="item.Status === 'Processing...'">
@@ -88,7 +88,7 @@ export default {
   components: {
     loader
   },
-  props: ["item", "user"],
+  props: ["item", "user", "processing"],
   data: function() {
     return {
       expanded: false,
@@ -96,6 +96,12 @@ export default {
     };
   },
   methods: {
+    EmitApprove: function() {
+      if (!this.processing) this.$emit("modalapprove", this.item);
+    },
+    EmitReject: function() {
+      if (!this.processing) this.$emit("modalreject", this.item);
+    },
     Expand: function() {
       if (this.expanded) {
         this.$refs.i.innerHTML = "expand_more";

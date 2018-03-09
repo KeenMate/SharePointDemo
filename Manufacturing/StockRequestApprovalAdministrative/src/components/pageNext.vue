@@ -12,7 +12,8 @@ export default {
   methods: {
     GetNumOfPages: function() {
       var pages = this.count / this.itemsPerPage;
-      return Math.floor(pages) + 1;
+      if (Number.isInteger(pages)) return pages;
+      else return Math.floor(pages) + 1;
     },
     NextClick: function() {
       if (this.selected == this.GetNumOfPages() || this.allDisable) return;

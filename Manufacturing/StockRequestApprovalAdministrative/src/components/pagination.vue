@@ -1,6 +1,5 @@
 <template>  
-  <p class="center-align">Page {{ selected }} of {{ GetNumOfPages() }}</p>
-            
+  <p class="center-align">Page {{ selected }} of {{ GetNumOfPages() }}</p>            
 </template>
 
 <script>
@@ -10,7 +9,8 @@ export default {
   methods: {
     GetNumOfPages: function() {
       var pages = this.count / this.itemsPerPage;
-      return Math.floor(pages) + 1;
+      if (Number.isInteger(pages)) return pages;
+      else return Math.floor(pages) + 1;
     }
   }
 };
