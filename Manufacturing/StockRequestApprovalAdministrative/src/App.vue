@@ -124,7 +124,6 @@ export default {
     PrevPage: function() {
       this.pageSelected--;
       var last = this.data[0].Created;
-      console.dir(last);
       this.paginationString =
         "PagedPrev=TRUE&Paged=TRUE&p_Created=" +
         moment(last, "DD.MM.YYYY HH:mm:ss").format(
@@ -156,7 +155,6 @@ export default {
     },
     ModalClick: function(button) {
       var self = this;
-      console.dir(button);
       if (button == "Approve") {
         this.itemProcessing = true;
         var res = provider.GetData(
@@ -217,7 +215,6 @@ export default {
             ? "&onlyUnresolved=true"
             : "&onlyUnresolved=false")
       );
-      console.dir(self.paginationString);
       getDataResult
         .done(function(data) {
           if (data) {
@@ -266,7 +263,6 @@ export default {
               }
               if (count) {
                 self.totalItems = count;
-                console.dir(self.totalItems);
               }
               self.canClick = true;
               self.isLoading = false;

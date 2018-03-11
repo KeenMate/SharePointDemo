@@ -125,11 +125,11 @@ namespace StockRequestApprovalWeb.Controllers
 						StockRequestApproveData d = StockRequestApproveDataMapper.MapStockRequestModel(clientContext, item);
 						StockRequestApproveDataJSON jmodel = new StockRequestApproveDataJSON();
 						jmodel.ID = int.Parse(item["ID"].ToString());
-						jmodel.Created = item["Created"].ToString();
+						jmodel.Created = ((DateTime)item["Created"]).ToString("dd.MM.yyyy HH:mm:ss");
 						jmodel.CreatedBy = ((FieldUserValue)item["Author"]).LookupValue;
 						jmodel.AllowedApprovers = d.AllowedApprovers.ConvertAll(x => x.LookupValue);
 						jmodel.ApprovedBy = d.ApprovedBy.ConvertAll(x => x.LookupValue);
-						jmodel.DeliveredOn = d.DeliveredOn.ToString();
+						jmodel.DeliveredOn = d.DeliveredOn.ToString("dd.MM.yyyy HH:mm:ss");
 						jmodel.Items = d.Items;
 						jmodel.RequestID = d.RequestID;
 						jmodel.ModifiedBy = ((FieldUserValue)item["Editor"]).LookupValue;

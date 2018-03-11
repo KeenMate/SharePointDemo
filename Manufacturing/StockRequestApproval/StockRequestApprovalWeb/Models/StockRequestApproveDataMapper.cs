@@ -15,16 +15,16 @@ namespace StockRequestApprovalWeb.Models
 		{
 			StockRequestApproveData toReturn = new StockRequestApproveData(item)
 			{
-				DeliveredOn = DateTime.Parse(item["DeliveredOn"].ToString()),
-				Items = JsonConvert.DeserializeObject<List<StockRequestItem>>(item["Data"].ToString()),
-				ApprovedBy = (item["ApprovedBy"] as FieldUserValue[])?.ToList() ?? new List<FieldUserValue>(),
+				DeliveredOn = DateTime.Parse(item[ConfigurationManager.AppSettings["DeliveredOnFieldName"]].ToString()),
+				Items = JsonConvert.DeserializeObject<List<StockRequestItem>>(item[ConfigurationManager.AppSettings["DataFieldName"]].ToString()),
+				ApprovedBy = (item[ConfigurationManager.AppSettings["ApprovedByFieldName"]] as FieldUserValue[])?.ToList() ?? new List<FieldUserValue>(),
 				Status = MapStatus(item[ConfigurationManager.AppSettings["StatusFieldName"]].ToString()),
 			};
-			if (item["RequestID"] != null)
+			if (item[ConfigurationManager.AppSettings["RequestIDFieldName"]] != null)
 			{
 				try
 				{
-					toReturn.RequestID = Guid.Parse(item["RequestID"].ToString());
+					toReturn.RequestID = Guid.Parse(item[ConfigurationManager.AppSettings["RequestIDFieldName"]].ToString());
 				}
 				catch
 				{

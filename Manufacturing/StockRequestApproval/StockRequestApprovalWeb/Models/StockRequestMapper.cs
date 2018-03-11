@@ -3,6 +3,7 @@ using Microsoft.SharePoint.Client.EventReceivers;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 
@@ -14,18 +15,18 @@ namespace StockRequestApprovalWeb.Models
 		{
 			return new StockRequestModel()
 			{
-				DeliveredOn = DateTime.Parse(properties.ItemEventProperties.AfterProperties["DeliveredOn"].ToString()),
+				DeliveredOn = DateTime.Parse(properties.ItemEventProperties.AfterProperties[ConfigurationManager.AppSettings["DeliveredOnFieldName"]].ToString()),
 				UserName = userName,
-				Items = JsonConvert.DeserializeObject<List<StockRequestItem>>(properties.ItemEventProperties.AfterProperties["Data"].ToString())
+				Items = JsonConvert.DeserializeObject<List<StockRequestItem>>(properties.ItemEventProperties.AfterProperties[ConfigurationManager.AppSettings["DataFieldName"]].ToString())
 			};
 		}
 		public static StockRequestModel MapStockRequestModel(ListItem item, string userName = null)
 		{
 			return new StockRequestModel()
 			{
-				DeliveredOn = DateTime.Parse(item["DeliveredOn"].ToString()),
+				DeliveredOn = DateTime.Parse(item[ConfigurationManager.AppSettings["DeliveredOnFieldName"]].ToString()),
 				UserName = userName,
-				Items = JsonConvert.DeserializeObject<List<StockRequestItem>>(item["Data"].ToString())
+				Items = JsonConvert.DeserializeObject<List<StockRequestItem>>(item[ConfigurationManager.AppSettings["DataFieldName"]].ToString())
 			};
 		}
 	}
