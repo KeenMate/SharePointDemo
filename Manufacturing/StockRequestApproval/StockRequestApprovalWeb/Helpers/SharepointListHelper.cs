@@ -25,8 +25,8 @@ namespace StockRequestApprovalWeb.Helpers
 		public static StockRequestApproveData ParseStockRequestList(ClientContext clientContext, string guid)
 		{
 			logger.Trace("ParseStockRequestList called.");
-			List oList = clientContext.Web.Lists.GetByTitle(ConfigurationManager.AppSettings["StockRequestListName"]);
-			ListItemCollection collListItem = GetItems(oList, string.Format(ConfigurationHelper.GetCamlQuery("CompareText"), ConfigurationManager.AppSettings["RequestIDFieldName"], guid));
+			List oList = clientContext.Web.Lists.GetByTitle(ConfigurationManager.AppSettings["ListName:StockRequest"]);
+			ListItemCollection collListItem = GetItems(oList, string.Format(ConfigurationHelper.GetCamlQuery("CompareText"), ConfigurationManager.AppSettings["FieldName:RequestID"], guid));
 			clientContext.Load(collListItem);
 			if (!TestConnection(clientContext)) throw new Exception("Not Authenticated");
 			if (collListItem.Count == 0)
@@ -52,26 +52,37 @@ namespace StockRequestApprovalWeb.Helpers
 				var citem = stockList.Where(x => (int)x["ID"] == item.StockID).FirstOrDefault();
 				if (citem == null)
 					throw new Exception($"You can not approve this request. {item.Title} is not in stock.");
-				if (int.Parse(citem[ConfigurationManager.AppSettings["AmountFieldName"]].ToString()) - item.Amount < 0)
-					throw new Exception($"You can not approve this request. {item.Amount - int.Parse(citem[ConfigurationManager.AppSettings["AmountFieldName"]].ToString())} of {item.Title} is missing.");
+				if (int.Parse(citem[ConfigurationManager.AppSettings["FieldName:Amount"]].ToString()) - item.Amount < 0)
+					throw new Exception($"You can not approve this request. {item.Amount - int.Parse(citem[ConfigurationManager.AppSettings["FieldName:Amount"]].ToString())} of {item.Title} is missing.");
 			}
 		}
 		public static void WithdrawItems(ClientContext clientContext, List<StockRequestItem> list, ListItemCollection coll)
 		{
 			logger.Trace("WithdrawItems called.");
+			List trans = clientContext.Web.Lists.GetByTitle(ConfigurationManager.AppSettings["ListName:TransactionLog"]);
 			foreach (var item in coll)
 			{
 				var citem = list.Where(x => x.StockID == (int)item["ID"]).First();
 				double pricePerUnit = citem.TotalPrice / citem.Amount;
-				if (int.Parse(item[ConfigurationManager.AppSettings["AmountFieldName"]].ToString()) - citem.Amount == 0)
+
+				if (int.Parse(item[ConfigurationManager.AppSettings["FieldName:Amount"]].ToString()) - citem.Amount == 0)
 				{
 					item.DeleteObject();
 				}
 				else
 				{
-					UpdateItem(item, ConfigurationManager.AppSettings["AmountFieldName"], (int.Parse(item[ConfigurationManager.AppSettings["AmountFieldName"]].ToString()) - citem.Amount).ToString());
-					UpdateItem(item, ConfigurationManager.AppSettings["PriceFieldName"], (int.Parse(item[ConfigurationManager.AppSettings["PriceFieldName"]].ToString()) - (citem.Amount * pricePerUnit)).ToString());
+					UpdateItem(item, ConfigurationManager.AppSettings["FieldName:Amount"], (int.Parse(item[ConfigurationManager.AppSettings["FieldName:Amount"]].ToString()) - citem.Amount).ToString());
+					UpdateItem(item, ConfigurationManager.AppSettings["FieldName:Price"], (int.Parse(item[ConfigurationManager.AppSettings["FieldName:Price"]].ToString()) - (citem.Amount * pricePerUnit)).ToString());
 				}
+				logger.Trace("Creating row in transaction log.");
+				ListItem it = trans.AddItem(new ListItemCreationInformation());
+				it[ConfigurationManager.AppSettings["FieldName:Title"]] = citem.Title;
+				it[ConfigurationManager.AppSettings["FieldName:What"]] = citem.StockItemID;
+				it[ConfigurationManager.AppSettings["FieldName:Amount"]] = citem.Amount;
+				it[ConfigurationManager.AppSettings["FieldName:Operation"]] = ConfigurationManager.AppSettings["FieldChoice:StockOut"];
+				it[ConfigurationManager.AppSettings["FieldName:TotalPrice"]] = citem.TotalPrice;
+				logger.Trace("Updating transaction item.");
+				it.Update();
 			}
 			clientContext.ExecuteQuery();
 		}
@@ -100,28 +111,14 @@ namespace StockRequestApprovalWeb.Helpers
 			query.ViewXml += "</Values></In></Where></Query></View>";
 			if (list.Count == 1) query.ViewXml = query.ViewXml.TrimQuery();
 
-			ListItemCollection stockList = GetListItems(clientContext, ConfigurationManager.AppSettings["StockListName"], query);
+			ListItemCollection stockList = GetListItems(clientContext, ConfigurationManager.AppSettings["ListName:Stock"], query);
 			clientContext.Load(stockList);
 			clientContext.ExecuteQuery();
 
 			foreach (var item in stockList)
 			{
-				list.First(x => x.StockItemID == ((FieldLookupValue)item[ConfigurationManager.AppSettings["ItemFieldName"]]).LookupId).StockID = int.Parse(item["ID"].ToString());
+				list.First(x => x.StockItemID == ((FieldLookupValue)item[ConfigurationManager.AppSettings["FieldName:Item"]]).LookupId).StockID = int.Parse(item["ID"].ToString());
 			}
-
-
-			/*
-			query = new CamlQuery();
-
-			query.ViewXml = $"<View><Query><Where><In><FieldRef Name=\"Item\"/><Values>";
-			foreach (var item in list)
-			{
-				query.ViewXml += $"<Value Type=\"Lookup\">{item.Title}</Value>";
-			}
-			query.ViewXml += "</Values></In></Where></Query></View>";
-			if (list.Count == 1) query.ViewXml = query.ViewXml.Replace("<In>", "<Eq>").Replace("</In>", "</Eq>").Replace("<Values>", "").Replace("</Values>", "");
-			return GetListItems(clientContext, ConfigurationManager.AppSettings["StockListName"], query);
-			*/
 			return stockList;
 		}
 
@@ -151,13 +148,13 @@ namespace StockRequestApprovalWeb.Helpers
 			query.ViewXml += "</Values></In></Where></Query></View>";
 
 			if (list.Count == 1) query.ViewXml = query.ViewXml.TrimQuery();
-			ListItemCollection coll = GetListItems(clientContext, ConfigurationManager.AppSettings["ConfigurationListName"], query);
+			ListItemCollection coll = GetListItems(clientContext, ConfigurationManager.AppSettings["ListName:Configuration"], query);
 			clientContext.ExecuteQuery();
 
 			foreach (ListItem item in coll)
 			{
-				if (!neededApproves.Any(x => x.LookupId == ((FieldUserValue)item[ConfigurationManager.AppSettings["ValueFieldName"]]).LookupId))
-					neededApproves.Add((FieldUserValue)item[ConfigurationManager.AppSettings["ValueFieldName"]]);
+				if (!neededApproves.Any(x => x.LookupId == ((FieldUserValue)item[ConfigurationManager.AppSettings["FieldName:Value"]]).LookupId))
+					neededApproves.Add((FieldUserValue)item[ConfigurationManager.AppSettings["FieldName:Value"]]);
 			}
 
 			return neededApproves;

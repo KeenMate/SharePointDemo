@@ -15,16 +15,16 @@ namespace StockRequestApprovalWeb.Models
 		{
 			StockRequestApproveData toReturn = new StockRequestApproveData(item)
 			{
-				DeliveredOn = DateTime.Parse(item[ConfigurationManager.AppSettings["DeliveredOnFieldName"]].ToString()),
-				Items = JsonConvert.DeserializeObject<List<StockRequestItem>>(item[ConfigurationManager.AppSettings["DataFieldName"]].ToString()),
-				ApprovedBy = (item[ConfigurationManager.AppSettings["ApprovedByFieldName"]] as FieldUserValue[])?.ToList() ?? new List<FieldUserValue>(),
-				Status = MapStatus(item[ConfigurationManager.AppSettings["StatusFieldName"]].ToString()),
+				DeliveredOn = DateTime.Parse(item[ConfigurationManager.AppSettings["FieldName:DeliveredOn"]].ToString()),
+				Items = JsonConvert.DeserializeObject<List<StockRequestItem>>(item[ConfigurationManager.AppSettings["FieldName:Data"]].ToString()),
+				ApprovedBy = (item[ConfigurationManager.AppSettings["FieldName:ApprovedBy"]] as FieldUserValue[])?.ToList() ?? new List<FieldUserValue>(),
+				Status = MapStatus(item[ConfigurationManager.AppSettings["FieldName:Status"]].ToString()),
 			};
-			if (item[ConfigurationManager.AppSettings["RequestIDFieldName"]] != null)
+			if (item[ConfigurationManager.AppSettings["FieldName:RequestID"]] != null)
 			{
 				try
 				{
-					toReturn.RequestID = Guid.Parse(item[ConfigurationManager.AppSettings["RequestIDFieldName"]].ToString());
+					toReturn.RequestID = Guid.Parse(item[ConfigurationManager.AppSettings["FieldName:RequestID"]].ToString());
 				}
 				catch
 				{

@@ -105,7 +105,7 @@ namespace StockRequestApprovalWeb.Controllers
 
 					query.ViewXml =
 						onlyUnresolved ?
-						$"<View><Query><Where><Eq><FieldRef Name='" + ConfigurationManager.AppSettings["StatusFieldName"] + $"'/><Value Type='Text'>Waiting for approval</Value></Eq></Where><OrderBy><FieldRef Name='Created' Ascending='False' /></OrderBy></Query><RowLimit>{count}</RowLimit></View>" :
+						$"<View><Query><Where><Eq><FieldRef Name='" + ConfigurationManager.AppSettings["FieldName:Status"] + $"'/><Value Type='Text'>Waiting for approval</Value></Eq></Where><OrderBy><FieldRef Name='Created' Ascending='False' /></OrderBy></Query><RowLimit>{count}</RowLimit></View>" :
 						$"<View><Query><OrderBy><FieldRef Name='Created' Ascending='False' /></OrderBy></Query><RowLimit>{count}</RowLimit></View>";
 					logger.Debug("Caml query set to: " + query.ViewXml);
 					if (position != "")
@@ -125,11 +125,11 @@ namespace StockRequestApprovalWeb.Controllers
 						StockRequestApproveData d = StockRequestApproveDataMapper.MapStockRequestModel(clientContext, item);
 						StockRequestApproveDataJSON jmodel = new StockRequestApproveDataJSON();
 						jmodel.ID = int.Parse(item["ID"].ToString());
-						jmodel.Created = ((DateTime)item["Created"]).ToString("dd.MM.yyyy HH:mm:ss");
+						jmodel.Created = item["Created"].ToString();
 						jmodel.CreatedBy = ((FieldUserValue)item["Author"]).LookupValue;
 						jmodel.AllowedApprovers = d.AllowedApprovers.ConvertAll(x => x.LookupValue);
 						jmodel.ApprovedBy = d.ApprovedBy.ConvertAll(x => x.LookupValue);
-						jmodel.DeliveredOn = d.DeliveredOn.ToString("dd.MM.yyyy HH:mm:ss");
+						jmodel.DeliveredOn = d.DeliveredOn.ToString();
 						jmodel.Items = d.Items;
 						jmodel.RequestID = d.RequestID;
 						jmodel.ModifiedBy = ((FieldUserValue)item["Editor"]).LookupValue;
@@ -170,7 +170,7 @@ namespace StockRequestApprovalWeb.Controllers
 					op.LoadList("Stock Request");
 
 					CamlQuery query = new CamlQuery();
-					if (onlyUnresolved) query.ViewXml = "<View><Query><Where><Eq><FieldRef Name='" + ConfigurationManager.AppSettings["StatusFieldName"] + "'/><Value Type='Text'>Waiting for approval</Value></Eq></Where></Query></View>";
+					if (onlyUnresolved) query.ViewXml = "<View><Query><Where><Eq><FieldRef Name='" + ConfigurationManager.AppSettings["FieldName:Status"] + "'/><Value Type='Text'>Waiting for approval</Value></Eq></Where></Query></View>";
 
 					ListItemCollection col = op.GetItems(query);
 					i = col.Count;

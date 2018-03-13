@@ -195,7 +195,7 @@ namespace StockRequestApprovalWeb.Controllers
 						if (!data.AllowedApprovers.Any(x => x.LookupId == clientContext.Web.CurrentUser.Id))
 							throw new Exception("You are not allowed to reject this request.");
 						logger.Trace("Rejecting order.");
-						data.UpdateItem(ConfigurationManager.AppSettings["StatusFieldName"], "Rejected");
+						data.UpdateItem(ConfigurationManager.AppSettings["FieldName:Status"], "Rejected");
 						clientContext.ExecuteQuery();
 						logger.Info("Order rejected. Generating PDF report.");
 
@@ -211,7 +211,7 @@ namespace StockRequestApprovalWeb.Controllers
 						SharepointListHelper.UploadFile(clientContext, path);
 						logger.Debug("File uploaded. Sending email.");
 
-						NotificationManager nm = new NotificationManager(ConfigurationHelper.GetApiKey(ApiKeys.SendGridApiKey), ConfigurationManager.AppSettings["templateDefsPath.json"]);
+						NotificationManager nm = new NotificationManager(ConfigurationHelper.GetApiKey(ApiKeys.SendGridApiKey), ConfigurationManager.AppSettings["Path:TemplateDefs"]);
 						FieldUserValue val = (FieldUserValue)data.OriginalItem.FieldValues["Author"];
 						ConfirmationEmailModel emailModel = new ConfirmationEmailModel();
 						emailModel.Created = m.Created;
@@ -269,7 +269,7 @@ namespace StockRequestApprovalWeb.Controllers
 				if (data.ApprovedBy.Count == data.AllowedApprovers.Count)
 				{
 					logger.Debug("Getting Stock Items list.");
-					ListItemCollection stockItemList = SharepointListHelper.GetListItems(clientContext, ConfigurationManager.AppSettings["StockItemsListName"]);
+					ListItemCollection stockItemList = SharepointListHelper.GetListItems(clientContext, ConfigurationManager.AppSettings["ListName:StockItems"]);
 					clientContext.ExecuteQuery();
 					logger.Debug("Getting Stock list.");
 					ListItemCollection stockList = SharepointListHelper.GetRequiredItems(clientContext, model.Items, stockItemList);
@@ -279,7 +279,7 @@ namespace StockRequestApprovalWeb.Controllers
 
 					logger.Debug("Withdrawing items.");
 					SharepointListHelper.WithdrawItems(clientContext, model.Items, stockList);
-					data.UpdateItem(ConfigurationManager.AppSettings["StatusFieldName"], Status.Approved.ToUserFriendlyString());
+					data.UpdateItem(ConfigurationManager.AppSettings["FieldName:Status"], Status.Approved.ToUserFriendlyString());
 				}
 			}
 			else
@@ -288,7 +288,7 @@ namespace StockRequestApprovalWeb.Controllers
 			}
 
 			logger.Debug("Updating approved by.");
-			data.UpdateItem(ConfigurationManager.AppSettings["ApprovedByFieldName"], data.ApprovedBy.ToArray());
+			data.UpdateItem(ConfigurationManager.AppSettings["FieldName:ApprovedBy"], data.ApprovedBy.ToArray());
 			clientContext.ExecuteQuery();
 			logger.Info("Order approved.");
 
@@ -305,7 +305,7 @@ namespace StockRequestApprovalWeb.Controllers
 			SharepointListHelper.UploadFile(clientContext, path);
 			logger.Debug("File uploaded. Sending email.");
 
-			NotificationManager nm = new NotificationManager(ConfigurationHelper.GetApiKey(ApiKeys.SendGridApiKey), ConfigurationManager.AppSettings["templateDefsPath.json"]);
+			NotificationManager nm = new NotificationManager(ConfigurationHelper.GetApiKey(ApiKeys.SendGridApiKey), ConfigurationManager.AppSettings["Path:TemplateDefs"]);
 			FieldUserValue val = (FieldUserValue)data.OriginalItem.FieldValues["Author"];
 			ConfirmationEmailModel emailModel = new ConfirmationEmailModel();
 			emailModel.Created = devmodel.Created;

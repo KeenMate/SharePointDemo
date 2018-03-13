@@ -50,8 +50,8 @@ namespace StockRequestApprovalWeb.Controllers
 				}
 				logger.Trace("Loading Stock items and stock list");
 				CSOMOperation op = new CSOMOperation(clientContext);
-				ListItemCollection stock = op.LoadList(ConfigurationManager.AppSettings["StockItemsListName"]).LoadList(ConfigurationManager.AppSettings["StockListName"]).GetItems();
-				ListItemCollection stockItems = op.SelectList(ConfigurationManager.AppSettings["StockItemsListName"]).GetItems();
+				ListItemCollection stock = op.LoadList(ConfigurationManager.AppSettings["ListName:StockItems"]).LoadList(ConfigurationManager.AppSettings["ListName:Stock"]).GetItems();
+				ListItemCollection stockItems = op.SelectList(ConfigurationManager.AppSettings["ListName:StockItems"]).GetItems();
 				DevExpressReportModel model = new DevExpressReportModel();
 				List<DevExpressReportModel> lst = new List<DevExpressReportModel>();
 				List<StockRequestItem> items = new List<StockRequestItem>();
@@ -60,10 +60,10 @@ namespace StockRequestApprovalWeb.Controllers
 				foreach (ListItem item in stock)
 				{
 					StockRequestItem i = new StockRequestItem();
-					i.Amount = int.Parse(item[ConfigurationManager.AppSettings["AmountFieldName"]].ToString());
-					i.MaterialType = stockItems.FirstOrDefault(x => x[ConfigurationManager.AppSettings["TitleFieldName"]].ToString() == ((FieldLookupValue)item[ConfigurationManager.AppSettings["ItemFieldName"]]).LookupValue)[ConfigurationManager.AppSettings["MaterialTypeFieldName"]].ToString();
-					i.Title = ((FieldLookupValue)item[ConfigurationManager.AppSettings["ItemFieldName"]]).LookupValue;
-					i.TotalPrice = int.Parse(item[ConfigurationManager.AppSettings["PriceFieldName"]].ToString());
+					i.Amount = int.Parse(item[ConfigurationManager.AppSettings["FieldName:Amount"]].ToString());
+					i.MaterialType = stockItems.FirstOrDefault(x => x[ConfigurationManager.AppSettings["FieldName:Title"]].ToString() == ((FieldLookupValue)item[ConfigurationManager.AppSettings["FieldName:Item"]]).LookupValue)[ConfigurationManager.AppSettings["FieldName:MaterialType"]].ToString();
+					i.Title = ((FieldLookupValue)item[ConfigurationManager.AppSettings["FieldName:Item"]]).LookupValue;
+					i.TotalPrice = int.Parse(item[ConfigurationManager.AppSettings["FieldName:Price"]].ToString());
 					items.Add(i);
 				}
 				model.Items = items;
