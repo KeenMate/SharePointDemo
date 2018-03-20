@@ -99,7 +99,7 @@ namespace StockRequestApprovalWeb.Controllers
 				{
 					logger.Info("FinalAccessToken is null. Redirecting to authentication");
 					Response.SetCookie(new HttpCookie("redirect", "Response/Reject?guid=" + Request.QueryString["guid"]));
-					return RedirectToAction("Authenticate", "Authenticate");
+					return RedirectToAction("Index", "Authenticate");
 				}
 			}
 			else

@@ -8,22 +8,46 @@
 <head>
 	<meta name="viewport" content="width=device-width" />
 	<title>Error</title>
-	@Styles.Render("~/Content/css")
+	@Styles.Render("~/Content/materialize-min.css")
+	@Styles.Render("~/Content/Site.css")
 </head>
 <body>
-	<div class="container">
-		<div class="jumbotron">
-			<h2>An unexpected error has occurred.</h2>
-			@if (Model == null)
-			{
-				<p>Please try again by launching the app installed on your site.</p>
-
-			}
-			else
-			{
-				<p>@Model.Exception.Message</p>
-			}
+	<nav class="top-nav" style="margin-top: -56px">
+		<div class="nav-wrapper">
+			@Html.ActionLink("Stock Management", "Index", "RequestsOverview", new { area = "" }, new { @class = "brand-logo" })
 		</div>
+	</nav>
+	<div class="container">
+		@Html.ActionLink("Go to all requests", "Index", "RequestsOverview")
+		<div id="modal1" class="modal">
+			<div class="modal-content">
+				<h4>An unexpected error has occurred.</h4>
+				@if (Model == null)
+				{
+					<p>Please try again by launching the app installed on your site.</p>
+				}
+				else
+				{
+					<p>@Model.Exception.Message</p>
+				}
+			</div>
+			<div class="modal-footer">
+				<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">OK</a>
+			</div>
+		</div>
+		<hr />
+		<footer>
+			<p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+		</footer>
+
+		<script src="~/Scripts/jQuery.js"></script>
+		<script src="~/Scripts/materialize.min.js"></script>
+		<script>
+			$(document).ready(function () {
+				$('.modal').modal();
+				$('.modal').modal('open');
+			});
+		</script>
 	</div>
 </body>
 </html>
