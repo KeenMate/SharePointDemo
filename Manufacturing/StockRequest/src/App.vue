@@ -55,9 +55,6 @@ export default {
       ButtonEnabled: false
     }
   },
-  created() {
-
-  },
   methods: {
     testBtn: function (lock = false) {
       if (lock || this.DeliveredOn < Date.now() || $(".datepicker").val() === "" || $(".timepicker").val() === "") {
@@ -163,7 +160,7 @@ export default {
         var json = {
           Amount: element.Amount,
           Title: element.Title,
-          EditedID: element.EditedID,
+          StockItemID: element.StockItemID,
           TotalPrice: element.Amount * element.UnitPrice,
           MaterialType: element.MaterialType
         };

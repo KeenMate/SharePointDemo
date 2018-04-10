@@ -57,7 +57,7 @@ export default {
                             UnitPrice: stockItem.UnitPrice,
                             MaxAmount: stock.Amount,
                             Amount: 0,
-                            EditedID: stock.Id,
+                            StockItemID: stock.Item.Id,
                             MaterialType: stock.Item.MaterialType.Value
                         };
                         self.$emit("onAutocompleted", self.Item);
