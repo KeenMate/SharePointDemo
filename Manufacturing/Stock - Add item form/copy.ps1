@@ -1,0 +1,1 @@
+cp "./dist/build.js" "\\keenmate.sharepoint.com@SSL\DavWWWRoot\sites\demo\manufacturingfacility\SiteAssets\Stock\js\build.js"

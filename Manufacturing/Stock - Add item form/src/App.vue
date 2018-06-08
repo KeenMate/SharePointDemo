@@ -12,11 +12,11 @@
     </div>
     <div class="row removeMargin">
       <div class="input-field col s6">
-        <input disabled id="totalPrice" class="removeMargin" :value="CalcTotalPrice" type="text" class="validate">
+        <input disabled id="totalPrice" class="removeMargin validate" :value="CalcTotalPrice" type="text">
         <label for="totalPrice">Total price</label>
       </div>
       <div class="input-field col s6">
-        <input disabled id="totalAmount" class="removeMargin" :value="CalcTotalAmount" type="text" class="validate">
+        <input disabled id="totalAmount" class="removeMargin validate" :value="CalcTotalAmount" type="text">
         <label for="totalAmount">Total amount</label>
       </div>
     </div>
@@ -33,26 +33,31 @@
 </template>
 
 <script>
-import { Observable } from 'rxjs/Observable'
-import 'rxjs/add/observable/fromEvent'
-import service from './services/stockItemsService'
-import moment from "moment"
-import dataFunc from "./viewModels/appViewModel"
-import transactionLog from "./components/transaction-log.vue"
-import itemInfo from "./components/item-info.vue"
-import loading from "./components/loading.vue"
+import { Observable } from "rxjs/Observable";
+import "rxjs/add/observable/fromEvent";
+import service from "./services/stockItemsService";
+import moment from "moment";
+import dataFunc from "./viewModels/appViewModel";
+import transactionLog from "./components/transaction-log.vue";
+import itemInfo from "./components/item-info.vue";
+import loading from "./components/loading.vue";
 
 export default {
-  name: 'app',
+  name: "app",
   components: {
-    "transaction-log": transactionLog,
-    "item-info": itemInfo,
-    "loading": loading
+    transactionLog,
+    itemInfo,
+    loading
   },
-  data: () => dataFunc(),
+  data: function() {
+    return dataFunc();
+  },
   subscriptions() {
     return {
-      filterText: Observable.fromEvent(document.querySelector('#autocomplete-input'), 'input')
+      filterText: Observable.fromEvent(
+        document.querySelector("#autocomplete-input"),
+        "input"
+      )
         .filter(event => {
           if (this.Name !== "") {
             this.resetItem();
@@ -62,116 +67,134 @@ export default {
         })
         .debounceTime(250)
         .map(event => event.target.value)
-    }
+    };
   },
-  computed:
-  {
-    CalcTotalPrice: function () {
-      return (parseInt(this.itemUnitPrice) * (parseInt(this.amount) + parseInt(this.ItemsInStock)));
+  computed: {
+    CalcTotalPrice: function() {
+      return (
+        parseInt(this.itemUnitPrice) *
+        (parseInt(this.amount) + parseInt(this.ItemsInStock))
+      );
     },
-    CalcTotalAmount: function () {
-      return (parseInt(this.amount) + parseInt(this.ItemsInStock));
+    CalcTotalAmount: function() {
+      return parseInt(this.amount) + parseInt(this.ItemsInStock);
     },
-    CalcPriceForSelectedAmount: function () {
-      return (parseInt(this.itemUnitPrice) * parseInt(this.amount));
+    CalcPriceForSelectedAmount: function() {
+      return parseInt(this.itemUnitPrice) * parseInt(this.amount);
     }
   },
   created() {
     var self = this;
 
     this.$observables.filterText.subscribe(searchText => {
-      service.searchByTitle(searchText)
-        .done(function (result) {
-          $('.autocomplete-content').off();
-          $('#autocomplete-input').autocomplete({
-            data: service.parseAutocompleteData(result),
-            limit: 10,
-            onAutocomplete: function (params) {
-              self.autocomplete(params, result);
-            },
-            minLength: 1
-          });
-          if (searchText in service.parseAutocompleteData(result)) {
-            self.autocomplete(searchText, result);
-          }
-          $("#autocomplete-input").trigger("focus");
+      service.searchByTitle(searchText).done(function(result) {
+        $(".autocomplete-content").off();
+        $("#autocomplete-input").autocomplete({
+          data: service.parseAutocompleteData(result),
+          limit: Config.Stock.AutocompleteLimit,
+          onAutocomplete: function(params) {
+            self.autocomplete(params, result);
+          },
+          minLength: 1
         });
+        if (searchText in service.parseAutocompleteData(result)) {
+          self.autocomplete(searchText, result);
+        }
+        $("#autocomplete-input").trigger("focus");
+      });
     });
     this.isLoading(false);
   },
-  methods:
-  {
-    autocomplete: function (params, result) {
+  methods: {
+    autocomplete: function(params, result) {
       var self = this;
       self.isLoading(true);
       var stockItem = result.d.filter(x => x.Title === params)[0];
-      service.loadStockItem(params)
-        .done(function (stockAmount) {
-          var stock = stockAmount.d.results;
-          if (stock.length > 0) {
-            stock = stock[0];
-            self.ItemsInStock = stock.Amount;
-            self.eTag = stock.__metadata.etag;
-            self.EditedID = stock.Id;
-          }
-          else {
-            self.ItemsInStock = 0;
-            self.eTag = null;
-          }
-          self.ID = stockItem.Id;
-          self.MaterialType = stockItem.MaterialType.Value;
-          self.MeasuringUnit = stockItem.MeasuringUnit.Value;
-          self.itemUnitPrice = stockItem.UnitPrice;
+      service.loadStockItem(params).done(function(stockAmount) {
+        var stock = stockAmount.d.results;
+        if (stock.length > 0) {
+          stock = stock[0];
+          self.ItemsInStock = stock.Amount;
+          self.eTag = stock.__metadata.etag;
+          self.EditedID = stock.Id;
+        } else {
+          self.ItemsInStock = 0;
+          self.eTag = null;
+        }
+        self.ID = stockItem.Id;
+        self.MaterialType = stockItem.MaterialType.Value;
+        self.MeasuringUnit = stockItem.MeasuringUnit.Value;
+        self.itemUnitPrice = stockItem.UnitPrice;
 
-          self.Name = stockItem.Title;
-          self.PricePerUnit = stockItem.UnitPrice;
-          self.amount = 0;
+        self.Name = stockItem.Title;
+        self.PricePerUnit = stockItem.UnitPrice;
+        self.amount = 0;
 
-          self.isActive.amount = true;
-          self.autocompleteEnable();
-          $("#lAmount").text("Amount");
-        });
+        self.isActive.amount = true;
+        self.autocompleteEnable();
+        $("#lAmount").text("Amount");
+      });
     },
-    send: function (event) {
+    send: function(event) {
       var self = this;
       this.isLoading(true);
       var JSONToSend = {
         __metadata: {
-          type: 'SP.Data.StockListItem'
+          type: "SP.Data.StockListItem"
         },
         Price: this.CalcTotalPrice,
         Amount: this.CalcTotalAmount
       };
       if (this.eTag === null) {
         JSONToSend.ItemId = this.ID;
-        service.sendNewItem(JSONToSend).done(function () {
-          self.sendLog();
-        }).fail(function (data) {
-          Materialize.toast("Operation failed, see console for more details.", 7500);
-          console.dir(data);
-          self.isLoading(false);
-        });
-      } else {
-        var ieTag = this.eTag.split("\"");
-        ieTag = parseInt(ieTag[1]);
-        service.sendEditedItem(JSONToSend, this.EditedID, ieTag).done(function () {
-          self.sendLog();
-        }).fail(function (data) {
-          if (data.responseText.includes("request ETag value")) {
-            Materialize.toast("Ooops! Seems like someone was faster than you. See what happend in the log below and try it again.", 20000);
-          } else if (data.responseText.includes("does not exist")) {
-            Materialize.toast("Ooops! Seems like " + self.Name + " no longer exists. It was probably deleted while you were editing. Simply try to create it again.", 20000);
-          } else {
-            Materialize.toast("Operation failed, see console for more details.", 10000);
+        service
+          .sendNewItem(JSONToSend)
+          .done(function() {
+            self.sendLog();
+          })
+          .fail(function(data) {
+            Materialize.toast(
+              "Operation failed, see console for more details.",
+              7500
+            );
             console.dir(data);
-          }
-          self.resetItem();
-          self.autocompleteReset();
-          self.isLoading(false);
-        });
+            self.isLoading(false);
+          });
+      } else {
+        var ieTag = this.eTag.split('"');
+        ieTag = parseInt(ieTag[1]);
+        service
+          .sendEditedItem(JSONToSend, this.EditedID, ieTag)
+          .done(function() {
+            self.sendLog();
+          })
+          .fail(function(data) {
+            if (data.responseText.includes("request ETag value")) {
+              Materialize.toast(
+                "Ooops! Seems like someone was faster than you. See what happend in the log below and try it again.",
+                20000
+              );
+            } else if (data.responseText.includes("does not exist")) {
+              Materialize.toast(
+                "Ooops! Seems like " +
+                  self.Name +
+                  " no longer exists. It was probably deleted while you were editing. Simply try to create it again.",
+                20000
+              );
+            } else {
+              Materialize.toast(
+                "Operation failed, see console for more details.",
+                10000
+              );
+              console.dir(data);
+            }
+            self.resetItem();
+            self.autocompleteReset();
+            self.isLoading(false);
+          });
       }
     },
-    sendLog: function () {
+    sendLog: function() {
       var self = this;
       var toSend = {
         __metadata: {
@@ -183,42 +206,50 @@ export default {
         Operation: "Stock-In",
         WhatId: this.ID
       };
-      service.sendLog(toSend).done(function () {
-        self.autocompleteReset();
-        Materialize.toast(self.amount + " of " + self.Name + ' was successfully added to stock', 15000);
-        self.resetItem();
-        self.isLoading(false);
-      }).fail(function (data) {
-        alert("Operation failed, see console for more details.");
-        console.dir(data);
-        self.isLoading(false);
-      });
+      service
+        .sendLog(toSend)
+        .done(function() {
+          self.autocompleteReset();
+          Materialize.toast(
+            self.amount +
+              " of " +
+              self.Name +
+              " was successfully added to stock",
+            15000
+          );
+          self.resetItem();
+          self.isLoading(false);
+        })
+        .fail(function(data) {
+          alert("Operation failed, see console for more details.");
+          console.dir(data);
+          self.isLoading(false);
+        });
     },
-    autocompleteReset: function () {
+    autocompleteReset: function() {
       $("#autocomplete-input").val("");
       this.autocompleteEnable();
       $("#autocomplete-input").trigger("focus");
     },
-    autocompleteEnable: function () {
+    autocompleteEnable: function() {
       $("#autocomplete-input").removeAttr("disabled");
     },
-    autocompleteDisable: function () {
+    autocompleteDisable: function() {
       $("#autocomplete-input").attr("disabled", true);
     },
-    isLoading: function (bool) {
+    isLoading: function(bool) {
       if (bool) {
         this.IsLoading = true;
         this.autocompleteDisable();
         this.isActive.amount = false;
         this.isActive.saveButton = false;
-      }
-      else {
+      } else {
         this.IsLoading = false;
         this.autocompleteEnable();
         this.testAmount();
       }
     },
-    resetItem: function () {
+    resetItem: function() {
       this.Name = "";
       this.amount = 0;
       this.MaterialType = "";
@@ -229,34 +260,31 @@ export default {
       this.ID = null;
       this.EditedID = null;
     },
-    testAmount: function () {
+    testAmount: function() {
       if (this.Name !== "") {
         this.isActive.amount = true;
-      }
-      else {
+      } else {
         this.isActive.amount = false;
       }
       this.testSend();
     },
-    testSend: function () {
+    testSend: function() {
       if (this.amount > 0) {
         this.isActive.saveButton = true;
-      }
-      else {
+      } else {
         this.isActive.saveButton = false;
       }
     },
-    parseDate: function (date) {
+    parseDate: function(date) {
       return moment(date).format("YYYY-MM-DD HH:mm:ss");
-    },
+    }
   }
-}
-
+};
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -289,5 +317,9 @@ a {
 
 .removeMargin {
   margin-bottom: 0px !important;
+}
+
+ul.autocomplete-content {
+  overflow: hidden;
 }
 </style>

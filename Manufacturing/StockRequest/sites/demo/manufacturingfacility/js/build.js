@@ -10210,9 +10210,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 /***/ }),
 /* 35 */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-module.exports = function debounce(fn, delay) {
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = debounce;
+function debounce(fn, delay) {
   var timeoutID = null;
   return function () {
     clearTimeout(timeoutID);
@@ -10222,7 +10224,7 @@ module.exports = function debounce(fn, delay) {
       fn.apply(that, args);
     }, delay);
   };
-};
+}
 
 /***/ }),
 /* 36 */
@@ -10232,13 +10234,13 @@ module.exports = function debounce(fn, delay) {
 const service = {
 	searchByTitle: function (text) {
 		return $.ajax({
-			url: "/sites/development/manufacturingfacility/_vti_bin/listdata.svc/StockItems()?$filter=startswith(Title, '" + text + "')&$select=Title,UnitPrice&$top=10",
+			url: "/sites/demo/manufacturingfacility/_vti_bin/listdata.svc/StockItems()?$filter=startswith(Title, '" + text + "')&$select=Title,UnitPrice&$top=10",
 			dataType: "json"
 		});
 	},
 	loadStockItem: function (params) {
 		return $.ajax({
-			url: "/sites/development/manufacturingfacility/_vti_bin/listdata.svc/Stock()?$filter=(Item/Title eq '" + params + "')&$expand=Item,Item/MaterialType&$select=Item/Title,Item/Id,Item/MaterialType,Price,Amount,Id",
+			url: "/sites/demo/manufacturingfacility/_vti_bin/listdata.svc/Stock()?$filter=(Item/Title eq '" + params + "')&$expand=Item,Item/MaterialType&$select=Item/Title,Item/Id,Item/MaterialType,Price,Amount,Id",
 			dataType: "json"
 		});
 	},
@@ -10252,7 +10254,7 @@ const service = {
 	},
 	sendNewItem: function (JSONObj) {
 		return $.ajax({
-			url: "/sites/development/manufacturingfacility/_api/web/lists/GetByTitle('Stock Request')/items",
+			url: "/sites/demo/manufacturingfacility/_api/web/lists/GetByTitle('Stock Request')/items",
 			type: "POST",
 			data: JSON.stringify(JSONObj),
 			headers: {
@@ -10264,7 +10266,7 @@ const service = {
 	},
 	sendEditedItem: function (JSONObj, editedItemID, eTag) {
 		return $.ajax({
-			url: "/sites/development/manufacturingfacility/_api/web/lists/GetByTitle('Stock')/items(" + editedItemID + ")",
+			url: "/sites/demo/manufacturingfacility/_api/web/lists/GetByTitle('Stock')/items(" + editedItemID + ")",
 			type: "PATCH",
 			data: JSON.stringify(JSONObj),
 			headers: {
@@ -10276,7 +10278,7 @@ const service = {
 	},
 	sendLog: function (JSONObj) {
 		return $.ajax({
-			url: "/sites/development/manufacturingfacility/_api/web/lists/GetByTitle('Stock - Transaction Log')/items",
+			url: "/sites/demo/manufacturingfacility/_api/web/lists/GetByTitle('Stock - Transaction Log')/items",
 			type: "POST",
 			data: JSON.stringify(JSONObj),
 			headers: {
@@ -10288,7 +10290,7 @@ const service = {
 	},
 	loadLog: function (itemName) {
 		return $.ajax({
-			url: "/sites/development/manufacturingfacility/_vti_bin/listdata.svc/StockTransactionLog()?&$select=Created,Operation,Title,Amount,TotalPrice,CreatedBy/Jméno&$filter=(Title eq '" + itemName + "')&$expand=Operation,CreatedBy,Created&$orderby=Created desc&$top=10",
+			url: "/sites/demo/manufacturingfacility/_vti_bin/listdata.svc/StockTransactionLog()?&$select=Created,Operation,Title,Amount,TotalPrice,CreatedBy/Jméno&$filter=(Title eq '" + itemName + "')&$expand=Operation,CreatedBy,Created&$orderby=Created desc&$top=10",
 			dataType: "json"
 		});
 	}
@@ -43127,12 +43129,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_item_vue__ = __webpack_require__(235);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_item_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_item_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__services_debounce__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__services_debounce___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__services_debounce__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_moment__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_moment__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__services_flash__ = __webpack_require__(191);
-//
-//
 //
 //
 //
@@ -43170,13 +43169,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'app',
+  name: "app",
   components: {
-    "loading": __WEBPACK_IMPORTED_MODULE_1__components_loading_vue___default.a,
-    "mat-autocomplete": __WEBPACK_IMPORTED_MODULE_2__components_mat_autocomplete_vue___default.a,
-    "item": __WEBPACK_IMPORTED_MODULE_3__components_item_vue___default.a
+    loading: __WEBPACK_IMPORTED_MODULE_1__components_loading_vue___default.a,
+    matAutocomplete: __WEBPACK_IMPORTED_MODULE_2__components_mat_autocomplete_vue___default.a,
+    item: __WEBPACK_IMPORTED_MODULE_3__components_item_vue___default.a
   },
-  data() {
+  data: function () {
     return {
       //searchText: "",
       isLoading: false,
@@ -43205,21 +43204,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
     },
     initializePicker: function () {
-      $('.datepicker').pickadate({
+      $(".datepicker").pickadate({
         selectMonths: true, // Creates a dropdown to control month
         selectYears: 1, // Creates a dropdown of 15 years to control year,
-        today: 'Today',
-        clear: 'Clear',
-        close: 'OK',
+        today: "Today",
+        clear: "Clear",
+        close: "OK",
         closeOnSelect: true // Close upon selecting a date,
       });
 
-      $('.timepicker').pickatime({
-        default: '12:00', // Set default time: 'now', '1:30AM', '16:30'
+      $(".timepicker").pickatime({
+        default: "12:00", // Set default time: 'now', '1:30AM', '16:30'
         twelvehour: false, // Use AM/PM or 24-hour format
-        donetext: 'OK', // text for done-button
-        cleartext: 'Clear', // text for clear-button
-        canceltext: 'Cancel', // Text for cancel-button
+        donetext: "OK", // text for done-button
+        cleartext: "Clear", // text for clear-button
+        canceltext: "Cancel", // Text for cancel-button
         autoclose: true // automatic close timepicker
       });
       this.DateDisabled = false;
@@ -43231,7 +43230,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         var fn = function () {
           if ($("#datepicker").prev().attr("aria-hidden") === "true") {
             clearInterval(x);
-            self.DeliveredOn = __WEBPACK_IMPORTED_MODULE_5_moment___default()($("#datepicker").val()).utcOffset('+0200');
+            self.DeliveredOn = __WEBPACK_IMPORTED_MODULE_5_moment___default()($("#datepicker").val()).utcOffset("+0200");
             if ($("#datepicker").val() === "") self.TimeDisabled = true;else self.TimeDisabled = false;
             if ($("#timepicker").val() !== "") self.parseTimePicker(true);
             self.testBtn();
@@ -43243,7 +43242,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     parseTimePicker: function (fast) {
       var self = this;
       if (fast === true) {
-        self.DeliveredOn = __WEBPACK_IMPORTED_MODULE_5_moment___default()(__WEBPACK_IMPORTED_MODULE_5_moment___default()(self.DeliveredOn).format("YYYY-MM-DD") + " " + $("#timepicker").val()).utcOffset('+0200');
+        self.DeliveredOn = __WEBPACK_IMPORTED_MODULE_5_moment___default()(__WEBPACK_IMPORTED_MODULE_5_moment___default()(self.DeliveredOn).format("YYYY-MM-DD") + " " + $("#timepicker").val()).utcOffset("+0200");
         return;
       }
       self.testBtn(true);
@@ -43251,7 +43250,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         var fn = function () {
           if ($("#timepicker").next().hasClass("picker--opened") === false) {
             clearInterval(x);
-            self.DeliveredOn = __WEBPACK_IMPORTED_MODULE_5_moment___default()(__WEBPACK_IMPORTED_MODULE_5_moment___default()(self.DeliveredOn).format("YYYY-MM-DD") + " " + $("#timepicker").val()).utcOffset('+0200');
+            self.DeliveredOn = __WEBPACK_IMPORTED_MODULE_5_moment___default()(__WEBPACK_IMPORTED_MODULE_5_moment___default()(self.DeliveredOn).format("YYYY-MM-DD") + " " + $("#timepicker").val()).utcOffset("+0200");
             self.testBtn();
           }
         };
@@ -43280,7 +43279,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.isLoading = true;
       var finalJSON = {
         __metadata: {
-          type: 'SP.Data.StockRequestListItem'
+          type: "SP.Data.StockrequestListItem"
         },
         DeliveredOn: __WEBPACK_IMPORTED_MODULE_5_moment___default()(this.DeliveredOn).toDate()
       };
@@ -43426,7 +43425,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__services_debounce__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__services_debounce___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__services_debounce__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_stockItemsService__ = __webpack_require__(36);
 //
 //
@@ -43449,7 +43447,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         };
     },
     watch: {
-        searchText: __WEBPACK_IMPORTED_MODULE_0__services_debounce___default()(function (value) {
+        searchText: __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__services_debounce__["a" /* default */])(function (value) {
             var self = this;
             __WEBPACK_IMPORTED_MODULE_1__services_stockItemsService__["a" /* default */].searchByTitle(value).done(function (result) {
                 $('#autocomplete-input').off();
@@ -43549,7 +43547,7 @@ exports = module.exports = __webpack_require__(37)();
 
 
 // module
-exports.push([module.i, "#app{font-family:Avenir,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-align:center;color:#2c3e50;margin-top:60px}h1,h2{font-weight:400}ul{list-style-type:none;padding:0}li{display:inline-block;margin:0 10px}a{color:#42b983}", ""]);
+exports.push([module.i, "#app{font-family:Avenir,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-align:center;color:#2c3e50;margin-top:60px}h1,h2{font-weight:400}ul{list-style-type:none;padding:0}li{display:inline-block;margin:0 10px}a{color:#42b983}ul.autocomplete-content{overflow:hidden}", ""]);
 
 // exports
 
@@ -51444,7 +51442,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.send($event)
       }
     }
-  }, [(_vm.stockItems.length === 0) ? _c('span', [_vm._v("Select an item")]) : (_vm.stockItems.length === 1) ? _c('span', [_vm._v("Request 1 item\n      ")]) : _c('span', [_vm._v("Request " + _vm._s(_vm.stockItems.length) + " items\n      ")])])])], 2)
+  }, [(_vm.stockItems.length === 0) ? _c('span', [_vm._v("Select an item")]) : (_vm.stockItems.length === 1) ? _c('span', [_vm._v("Request 1 item")]) : _c('span', [_vm._v("Request " + _vm._s(_vm.stockItems.length) + " items")])])])], 2)
 },staticRenderFns: []}
 
 /***/ }),

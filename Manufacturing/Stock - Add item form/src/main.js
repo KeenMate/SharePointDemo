@@ -9,6 +9,6 @@ import 'materialize-css'
 Vue.use(VueRx, Rx)
 
 var vm = new Vue({
-  el: '#app',
-  render: h => h(App)
+	el: '#app',
+	render: h => h(App)
 })

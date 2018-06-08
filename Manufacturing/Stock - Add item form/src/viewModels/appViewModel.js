@@ -1,24 +1,23 @@
 export default function () {
-    return {
+	return {
+		amount: 0,
+		itemUnitPrice: 0,
+		Name: "",
+		MaterialType: "",
+		MeasuringUnit: "",
+		PricePerUnit: 0,
+		ItemsInStock: 0,
 
-        amount: 0,
-        itemUnitPrice: 0,
-        Name: "",
-        MaterialType: "",
-        MeasuringUnit: "",
-        PricePerUnit: 0,
-        ItemsInStock: 0,
+		isActive: {
+			amount: false,
+			saveButton: false,
+		},
 
-        isActive: {
-            amount: false,
-            saveButton: false,
-        },
+		IsLoading: true,
 
-        IsLoading: true,
-
-        eTag: null,
-        ID: null,
-        EditedID: null,
-        ReloadLog: "",
-    }
+		eTag: null,
+		ID: null,
+		EditedID: null,
+		ReloadLog: "",
+	}
 }
