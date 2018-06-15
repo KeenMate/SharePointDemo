@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import service from "./services/stockItemsService";
+// import service from "./services/stockItemsService";
 import loading from "./components/loading.vue";
 import matAutocomplete from "./components/mat-autocomplete.vue";
 import item from "./components/item.vue";
@@ -173,7 +173,7 @@ export default {
       this.isLoading = true;
       var finalJSON = {
         __metadata: {
-          type: "SP.Data.StockrequestListItem"
+          type: "SP.Data.StockRequestListItem"
         },
         DeliveredOn: moment(this.DeliveredOn).toDate()
       };
@@ -192,7 +192,7 @@ export default {
       finalJSON.Data = JSON.stringify(DataJSON);
       console.dir(finalJSON);
       service
-        .sendNewItem(finalJSON)
+        .sendNewItem(finalJSON, Config.ListName_StockRequest)
         .done(function() {
           self.stockItems = [];
           self.isLoading = false;

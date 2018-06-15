@@ -34,7 +34,7 @@
 
 <script>
 import moment from "moment";
-import service from "../services/stockItemsService";
+// import service from "../services/stockItemsService";
 
 export default {
   name: "transaction-log",

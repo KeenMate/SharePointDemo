@@ -27,6 +27,9 @@ var Config = {
 
   Stock: {
     AutocompleteLimit: 10,
-    TransactionLogLimit: 25
+    TransactionLogLimit: 10
+  },
+  StockRequest: {
+    AutocompleteLimit: 10
   }
 }

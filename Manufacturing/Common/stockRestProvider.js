@@ -31,6 +31,14 @@ const service = {
 			dataType: "json"
 		});
 	},
+	loadStockItemWithMaterialType: function (params) {
+		return $.ajax({
+			url: "/sites/demo/manufacturingfacility/_vti_bin/listdata.svc/Stock()?$filter=(Item/Title eq '"
+				+ params
+				+ "')&$expand=Item,Item/MaterialType&$select=Item/Title,Item/Id,Item/MaterialType,Price,Amount,Id",
+			dataType: "json"
+		});
+	},
 
 
 	parseAutocompleteData: function (result) {
@@ -41,9 +49,9 @@ const service = {
 		});
 		return toReturn;
 	},
-	sendNewItem: function (JSONObj) {
+	sendNewItem: function (JSONObj, listName) {
 		return $.ajax({
-			url: Config.SiteAddressFromRoot + "_api/web/lists/GetByTitle('" + Config.ListName_Stock + "')/items",
+			url: Config.SiteAddressFromRoot + "_api/web/lists/GetByTitle('" + listName + "')/items",
 			type: "POST",
 			data: JSON.stringify(JSONObj),
 			headers: {
@@ -97,5 +105,4 @@ const service = {
 			dataType: "json"
 		});
 	}
-}
-export default service
+};

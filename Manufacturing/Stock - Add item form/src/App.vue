@@ -35,7 +35,7 @@
 <script>
 import { Observable } from "rxjs/Observable";
 import "rxjs/add/observable/fromEvent";
-import service from "./services/stockItemsService";
+// import service from "./services/stockItemsService";
 import moment from "moment";
 import dataFunc from "./viewModels/appViewModel";
 import transactionLog from "./components/transaction-log.vue";
@@ -148,7 +148,7 @@ export default {
       if (this.eTag === null) {
         JSONToSend.ItemId = this.ID;
         service
-          .sendNewItem(JSONToSend)
+          .sendNewItem(JSONToSend, Config.ListName_Stock)
           .done(function() {
             self.sendLog();
           })
